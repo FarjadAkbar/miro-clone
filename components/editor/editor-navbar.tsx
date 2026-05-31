@@ -1,4 +1,6 @@
-import { PanelLeftOpen, PanelLeftClose } from "lucide-react"
+"use client"
+
+import { PanelLeftClose, PanelLeftOpen } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { UserButton } from "@clerk/nextjs"
 
@@ -9,14 +11,15 @@ interface EditorNavbarProps {
 
 export function EditorNavbar({ sidebarOpen, onSidebarToggle }: EditorNavbarProps) {
   return (
-    <header className="fixed top-0 left-0 right-0 h-14 bg-surface border-b border-default flex items-center px-4 z-50">
-      {/* Left section - sidebar toggle */}
+    <header className="fixed top-0 left-0 right-0 z-50 flex h-14 items-center border-b border-surface-border bg-bg-surface px-4">
       <div className="flex items-center">
         <Button
+          type="button"
           variant="ghost"
           size="icon"
           onClick={onSidebarToggle}
-          className="text-secondary hover:text-primary"
+          className="text-copy-secondary hover:bg-bg-subtle hover:text-copy-primary"
+          aria-label={sidebarOpen ? "Close projects sidebar" : "Open projects sidebar"}
         >
           {sidebarOpen ? (
             <PanelLeftClose className="h-5 w-5" />
@@ -26,12 +29,8 @@ export function EditorNavbar({ sidebarOpen, onSidebarToggle }: EditorNavbarProps
         </Button>
       </div>
 
-      {/* Center section - empty for now */}
-      <div className="flex-1 flex items-center justify-center">
-        {/* Future: board title, breadcrumbs, etc. */}
-      </div>
+      <div className="flex flex-1 items-center justify-center" />
 
-      {/* Right section - user menu */}
       <div className="flex items-center">
         <UserButton
           appearance={{

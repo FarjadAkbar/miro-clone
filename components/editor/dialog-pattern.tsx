@@ -1,3 +1,5 @@
+"use client"
+
 import { X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -8,6 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { cn } from "@/lib/utils"
 
 interface DialogPatternProps {
   open: boolean
@@ -16,6 +19,7 @@ interface DialogPatternProps {
   description?: string
   children?: React.ReactNode
   footer?: React.ReactNode
+  className?: string
 }
 
 export function DialogPattern({
@@ -25,30 +29,40 @@ export function DialogPattern({
   description,
   children,
   footer,
+  className,
 }: DialogPatternProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-surface border-default text-primary">
+      <DialogContent
+        className={cn(
+          "rounded-3xl border-surface-border bg-bg-surface text-copy-primary sm:max-w-md [&>button.absolute]:hidden",
+          className
+        )}
+      >
         <DialogHeader>
-          <div className="flex items-center justify-between">
-            <DialogTitle className="text-primary">{title}</DialogTitle>
+          <div className="flex items-start justify-between gap-4">
+            <div className="space-y-1.5 text-left">
+              <DialogTitle className="text-copy-primary">{title}</DialogTitle>
+              {description ? (
+                <DialogDescription className="text-copy-muted">
+                  {description}
+                </DialogDescription>
+              ) : null}
+            </div>
             <Button
+              type="button"
               variant="ghost"
               size="icon"
+              className="shrink-0 text-copy-secondary hover:text-copy-primary"
               onClick={() => onOpenChange(false)}
-              className="text-secondary hover:text-primary"
             >
               <X className="h-4 w-4" />
+              <span className="sr-only">Close</span>
             </Button>
           </div>
-          {description && (
-            <DialogDescription className="text-secondary">
-              {description}
-            </DialogDescription>
-          )}
         </DialogHeader>
         {children}
-        {footer && <DialogFooter>{footer}</DialogFooter>}
+        {footer ? <DialogFooter>{footer}</DialogFooter> : null}
       </DialogContent>
     </Dialog>
   )

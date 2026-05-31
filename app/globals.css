@@ -3,20 +3,39 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  /* App surfaces */
   --color-bg-base: #080809;
   --color-bg-surface: #111114;
   --color-bg-elevated: #18181c;
   --color-bg-subtle: #1e1e23;
+
+  /* Borders */
   --color-border-default: #2a2a30;
   --color-border-subtle: #3a3a42;
+  --color-surface-border: #2a2a30;
+
+  /* Copy (use text-copy-* — never text-primary for headings) */
+  --color-copy-primary: #f0f0f4;
+  --color-copy-secondary: #c0c0cc;
+  --color-copy-muted: #808090;
+  --color-copy-faint: #505060;
+
+  /* Legacy text-* token names (same values as copy) */
   --color-text-primary: #f0f0f4;
   --color-text-secondary: #c0c0cc;
   --color-text-muted: #808090;
   --color-text-faint: #505060;
-  --color-accent-primary: #0004d4;
-  --color-accent-primary-dim: rgba(0, 4, 212, 0.12);
+  --color-faint: #505060;
+
+  /* Brand / accents */
+  --color-brand: #6366f1;
+  --color-brand-dim: rgba(99, 102, 241, 0.12);
+  --color-accent-primary: #6366f1;
+  --color-accent-primary-dim: rgba(99, 102, 241, 0.12);
   --color-accent-ai: #6457f9;
   --color-accent-ai-text: #8b82ff;
+
+  /* State */
   --color-state-error: #ff4d4f;
   --color-state-success: #34d399;
   --color-state-warning: #fbbf24;
@@ -34,6 +53,7 @@
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
 
+  /* shadcn semantic tokens (mapped for components/ui) */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -72,16 +92,24 @@
     border-color: var(--color-border-default);
     @apply border-border outline-ring/50;
   }
+
+  html {
+    @apply font-sans antialiased;
+  }
+
   body {
     background-color: var(--color-bg-base);
-    color: var(--color-text-primary);
+    color: var(--color-copy-primary);
   }
-  html {
-    @apply font-sans;
+
+  /* Lucide icons inherit readable color from parent controls */
+  button:not(:disabled) svg,
+  [role="button"]:not(:disabled) svg {
+    color: currentColor;
   }
 }
 
-/* Dark-only theme — no light mode. All variables default to dark values. */
+/* Dark-only theme — no light mode */
 :root {
   --background: #080809;
   --foreground: #f0f0f4;
@@ -89,8 +117,8 @@
   --card-foreground: #f0f0f4;
   --popover: #18181c;
   --popover-foreground: #f0f0f4;
-  --primary: #0004d4;
-  --primary-foreground: #080809;
+  --primary: #6366f1;
+  --primary-foreground: #f0f0f4;
   --secondary: #18181c;
   --secondary-foreground: #f0f0f4;
   --muted: #1e1e23;
@@ -100,19 +128,32 @@
   --destructive: #ff4d4f;
   --border: #2a2a30;
   --input: #2a2a30;
-  --ring: #00c8d4;
+  --ring: #6366f1;
   --radius: 0.75rem;
-  --chart-1: #000ed4;
+  --chart-1: #6366f1;
   --chart-2: #6457f9;
   --chart-3: #34d399;
   --chart-4: #fbbf24;
   --chart-5: #ff4d4f;
   --sidebar: #111114;
   --sidebar-foreground: #f0f0f4;
-  --sidebar-primary: #0004d4;
-  --sidebar-primary-foreground: #080809;
+  --sidebar-primary: #6366f1;
+  --sidebar-primary-foreground: #f0f0f4;
   --sidebar-accent: #1e1e23;
   --sidebar-accent-foreground: #f0f0f4;
   --sidebar-border: #2a2a30;
-  --sidebar-ring: #0031d4;
+  --sidebar-ring: #6366f1;
+
+  --clerk-color-background: var(--color-bg-base);
+  --clerk-color-foreground: var(--color-copy-primary);
+  --clerk-color-primary: var(--color-brand);
+  --clerk-color-primary-foreground: var(--color-copy-primary);
+  --clerk-color-muted: var(--color-bg-elevated);
+  --clerk-color-muted-foreground: var(--color-copy-muted);
+  --clerk-color-input: var(--color-bg-elevated);
+  --clerk-color-input-foreground: var(--color-copy-primary);
+  --clerk-color-border: var(--color-border-default);
+  --clerk-color-ring: var(--color-brand);
+  --clerk-border-radius: var(--radius);
+  --clerk-font-family: var(--font-geist-sans);
 }

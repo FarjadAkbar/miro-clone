@@ -1,7 +1,8 @@
 import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import { ClerkProvider } from "@clerk/nextjs"
-import { dark } from "@clerk/ui/themes"
+import { clerkAppearance } from "@/lib/clerk-appearance"
+import { AUTH_REDIRECT_URL } from "@/lib/clerk-routes"
 import "./globals.css"
 
 const geistSans = Geist({
@@ -15,8 +16,8 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "Ghost AI",
-  description: "AI-powered design collaboration",
+  title: "Miro AI",
+  description: "Collaborative system design workspace",
 }
 
 export default function RootLayout({
@@ -26,23 +27,11 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider
-      appearance={{
-        theme: dark,
-        variables: {
-          colorBackground: "var(--color-bg-base)",
-          colorNeutral: "var(--color-text-primary)",
-          colorPrimary: "var(--color-accent-primary)",
-          colorPrimaryForeground: "var(--color-bg-base)",
-          colorForeground: "var(--color-text-primary)",
-          colorInput: "var(--color-bg-elevated)",
-          colorInputForeground: "var(--color-text-primary)",
-          colorDanger: "var(--color-state-error)",
-          colorSuccess: "var(--color-state-success)",
-          colorWarning: "var(--color-state-warning)",
-          borderRadius: "var(--radius)",
-          fontFamily: "var(--font-geist-sans)",
-        },
-      }}
+      appearance={clerkAppearance}
+      signInFallbackRedirectUrl={AUTH_REDIRECT_URL}
+      signUpFallbackRedirectUrl={AUTH_REDIRECT_URL}
+      signInForceRedirectUrl={AUTH_REDIRECT_URL}
+      signUpForceRedirectUrl={AUTH_REDIRECT_URL}
     >
       <html
         lang="en"

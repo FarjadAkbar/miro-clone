@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { EditorAiSidebarPlaceholder } from "@/components/editor/editor-ai-sidebar-placeholder"
-import { EditorCanvasPlaceholder } from "@/components/editor/editor-canvas-placeholder"
+import { EditorCanvas } from "@/components/editor/editor-canvas"
 import { EditorWorkspaceNavbar } from "@/components/editor/editor-workspace-navbar"
 import { ProjectDialogs } from "@/components/editor/project-dialogs"
 import { ShareDialog } from "@/components/editor/share-dialog"
@@ -53,7 +53,7 @@ export function EditorWorkspaceShell({
       />
 
       <div className="flex min-h-0 flex-1 pt-14">
-        <EditorCanvasPlaceholder />
+        <EditorCanvas roomId={roomId} />
         <EditorAiSidebarPlaceholder open={aiSidebarOpen} />
       </div>
 

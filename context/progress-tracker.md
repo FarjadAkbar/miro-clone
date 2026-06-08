@@ -8,7 +8,7 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Current Goal
 
-- Wire Liveblocks provider on the editor workspace (canvas + presence)
+- Custom canvas nodes, edges, and presence cursors
 
 ## Completed
 
@@ -66,6 +66,12 @@ Update this file whenever the current phase, active feature, or implementation s
   - `lib/liveblocks-room.ts` — `getOrCreateRoom` for project room IDs (private rooms)
   - `POST /api/liveblocks-auth` — Clerk auth, project access check, room ensure, session token with user metadata; `403` when access denied
   - Installed `@liveblocks/node`, `@liveblocks/client`, `@liveblocks/react`
+- Base canvas (11-base-canvas)
+  - `types/canvas.ts` — `CanvasNodeData` (label, color, shape), `canvasNode` / `canvasEdge` types, `NODE_COLORS`, `NODE_SHAPES`
+  - `EditorCanvas` — `LiveblocksProvider` (`/api/liveblocks-auth`), `RoomProvider`, initial presence (`cursor: null`), `ClientSideSuspense`, connection error guard
+  - `EditorFlowCanvas` — `useLiveblocksFlow` (suspense, empty nodes/edges), React Flow with loose connections, `fitView`, `MiniMap`, dot `Background`
+  - Workspace shell wired to live canvas; `/editor/[roomId]` page remains server-rendered
+  - Installed `@xyflow/react`, `@liveblocks/react-flow`
 
 ## In Progress
 
@@ -73,7 +79,8 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Next Up
 
-- Wire `LiveblocksProvider` + `RoomProvider` on the editor workspace (canvas + presence)
+- Custom canvas node and edge rendering
+- Presence cursors on canvas
 
 ## Open Questions
 
@@ -86,6 +93,7 @@ Update this file whenever the current phase, active feature, or implementation s
 - `/editor` is the project home; `/editor/[roomId]` is the workspace shell.
 - Collaborators stored by email in `ProjectCollaborator`; profile enrichment via Clerk Backend API only (no local user table).
 - Liveblocks uses access-token auth via `prepareSession` + per-request `session.allow(room)` after Prisma access checks; rooms created with `defaultAccesses: []`.
+- Canvas state synced via `useLiveblocksFlow` in Liveblocks Storage; custom node/edge components deferred.
 
 ## Session Notes
 

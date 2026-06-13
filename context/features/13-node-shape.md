@@ -29,5 +29,5 @@ Replace the placeholder node renderer with proper shape rendering and a drag pre
 - Nodes render the correct shape variant for each type.
 - CSS shapes render correctly for rectangle, pill, and circle.
 - SVG shapes render and scale correctly for diamond, hexagon, and cylinder.
-- Shape dragging shows a ghost preview matching the dragged shape.
+- Shape dragging shows a miro preview matching the dragged shape.
 - `npm run build` passes without type errors.

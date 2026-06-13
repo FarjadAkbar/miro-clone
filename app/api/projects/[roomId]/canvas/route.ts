@@ -90,7 +90,8 @@ export async function PUT(request: Request, context: RouteContext) {
     return NextResponse.json({
       canvasJsonPath: blob.url,
     })
-  } catch {
+  } catch(error) {
+    console.error(error)
     return NextResponse.json(
       { error: "Failed to save canvas" },
       { status: 500 }

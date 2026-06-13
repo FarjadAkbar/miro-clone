@@ -22,7 +22,7 @@ export function AiRunStatusStrip({ active }: AiRunStatusStripProps) {
       </span>
       <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin text-accent-chat" />
       <p className="truncate text-xs text-copy-primary">
-        {latestStatus ?? "Ghost AI is updating the canvas…"}
+        {latestStatus ?? "Miro AI is updating the canvas…"}
       </p>
     </div>
   )

@@ -8,7 +8,7 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Current Goal
 
-- Fix Liveblocks flow storage on shape drop (feature 30)
+- None — foundation phase complete through feature 30
 
 ## Completed
   - Installed shadcn/ui with dark theme configuration
@@ -130,7 +130,7 @@ Update this file whenever the current phase, active feature, or implementation s
   - `POST /api/ai/design/token` — run ownership verify + Trigger.dev public token
   - Installed `@trigger.dev/sdk`, added `trigger.config.ts`
 - Design agent logic (23-design-agent-logic)
-  - `trigger/design-agent.ts` — Gemini plan via `@ai-sdk/google`, canvas mutations via `mutateFlow`, status feed + Ghost AI presence, error handling
+  - `trigger/design-agent.ts` — Gemini plan via `@ai-sdk/google`, canvas mutations via `mutateFlow`, status feed + Miro AI presence, error handling
   - `lib/design-agent-gemini.ts` — `generateDesignPlan()` with Zod action schema
   - `lib/canvas-design-actions.ts` — add/move/resize/update/delete nodes, add/delete edges through Liveblocks flow
   - `lib/liveblocks-ai-agent.ts` — `publishAiStatus`, `setAiAgentPresence`, `clearAiAgentPresence` via `@liveblocks/node`
@@ -140,7 +140,7 @@ Update this file whenever the current phase, active feature, or implementation s
   - Installed `ai`, `@ai-sdk/google`, `zod`; aligned `@liveblocks/node` to 3.19.5 for `mutateFlow` type compatibility
 - AI presence state (24-ai-presence-state)
   - `types/tasks.ts` — `aiStatusFeedMessageSchema` (Zod), `parseAiStatusFeedMessage`, `isAiGenerationActive()`
-  - `hooks/use-ai-generation-state.ts` — subscribes to `ai-status-feed` + Ghost AI `thinking` presence; latest validated status only
+  - `hooks/use-ai-generation-state.ts` — subscribes to `ai-status-feed` + Miro AI `thinking` presence; latest validated status only
   - `components/editor/ai-status-indicator.tsx` — shared status bar in AI sidebar
   - Sidebar disables input/send while generating; send button shows spinner; Enter blocked during generation
   - `canvas-presence-cursor.tsx` — `Loader2` spinner in name badge when `thinking: true`
@@ -175,6 +175,12 @@ Update this file whenever the current phase, active feature, or implementation s
   - `components/editor/spec-preview-modal.tsx` — Dialog preview via download endpoint; Markdown render; download action
   - `components/editor/spec-markdown.tsx` — styled Markdown renderer
   - Installed `react-markdown`, `@radix-ui/react-scroll-area`; added shadcn `ScrollArea`
+- Fix flow storage on shape drop (30-fix-flow-storage-shape-drop)
+  - Aligned all `@liveblocks/*` packages to `3.19.5`
+  - `lib/flow-storage.ts` — `FLOW_STORAGE_KEY`, `isValidFlowStorage()` for LiveObject + LiveMap checks
+  - `hooks/use-flow-storage-ready.ts` — repairs corrupted `"flow"` storage; returns `isFlowReady` after init
+  - `editor-flow-canvas.tsx` — guards shape drop and template import until flow storage is ready
+  - `use-canvas-autosave.ts` — waits for `isFlowReady` before Blob restore
 
 ## In Progress
 
@@ -182,7 +188,7 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Next Up
 
-- Fix Liveblocks flow storage on shape drop (30-fix-flow-storage-shape-drop)
+- None yet.
 
 ## Open Questions
 
@@ -196,7 +202,7 @@ Update this file whenever the current phase, active feature, or implementation s
 - Collaborators stored by email in `ProjectCollaborator`; profile enrichment via Clerk Backend API only (no local user table).
 - Liveblocks uses access-token auth via `prepareSession` + per-request `session.allow(room)` after Prisma access checks; rooms created with `defaultAccesses: []`.
 - Canvas state synced via `useLiveblocksFlow` in Liveblocks Storage; node shapes rendered via shared `CanvasNodeShapeView`.
-- AI design agent runs as Trigger.dev task; canvas updates use server-side `mutateFlow`; Ghost AI presence via `setPresence` (`ghost-ai` user ID).
+- AI design agent runs as Trigger.dev task; canvas updates use server-side `mutateFlow`; Miro AI presence via `setPresence` (`ghost-ai` user ID).
 - Shared AI progress uses Liveblocks feed `ai-status-feed` (single latest message) plus presence `thinking` flag.
 - Room chat uses separate Liveblocks feed `ai-chat`; messages validated with Zod before render.
 - Spec generation runs as Trigger.dev `generate-spec` task; `projectId` derived server-side from authenticated `roomId` access.
@@ -212,4 +218,4 @@ Update this file whenever the current phase, active feature, or implementation s
 - Feature 28: `ProjectSpec` + Blob persistence in generate-spec task; download at `/api/projects/[roomId]/specs/[specId]/download`.
 - Feature 29: Specs tab lists project specs, preview modal renders Markdown, download via access-checked API routes.
 - Audit (features 12–29): canvas shape/edge tooling exists in code; runtime visibility may need z-index fix. UserButton on canvas is intentional per feature 19. Generate Spec button still unwired.
-- Feature 30 spec: `flow.get is not a function` on shape drop — Liveblocks `"flow"` storage must be a LiveObject before mutations; see `30-fix-flow-storage-shape-drop.md`.
+- Feature 30: flow storage repair on load; shape drop/template/autosave guarded until `"flow"` LiveObject is valid; Liveblocks packages aligned to 3.19.5.

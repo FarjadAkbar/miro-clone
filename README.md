@@ -1,92 +1,114 @@
-# Progress Tracker
+# Miro AI
 
-Update this file whenever the current phase, active feature, or implementation state changes.
+A real-time collaborative system design workspace. Describe an architecture in plain English, let an AI agent map it onto a shared canvas, refine it with collaborators, and generate a Markdown technical specification from the resulting graph.
 
-## Current Phase
+## Features
 
-- Foundation
+- **Authentication & projects** — Clerk sign-in, project CRUD, owner/collaborator access
+- **Collaborative canvas** — Liveblocks + React Flow with live cursors, presence, shapes, edges, undo/redo, and zoom controls
+- **Starter templates** — Import prebuilt system designs (microservices, CI/CD, event-driven, and more)
+- **Canvas autosave** — Debounced snapshots to Vercel Blob with manual save status in the navbar
+- **AI design agent** — Submit prompts from the sidebar; Gemini plans canvas mutations via Trigger.dev
+- **Spec generation** — Generate, preview, and download Markdown specs from the current canvas and chat history
+- **Sharing** — Invite collaborators by email with Clerk profile enrichment
 
-## Current Goal
+## Stack
 
-- Wire Liveblocks provider on the editor workspace (canvas + presence)
+| Layer | Technology |
+| --- | --- |
+| Framework | Next.js 16, React 19, TypeScript |
+| UI | Tailwind CSS 4, shadcn/ui |
+| Auth | Clerk |
+| Database | Prisma, PostgreSQL |
+| Realtime canvas | Liveblocks, React Flow (`@xyflow/react`) |
+| Background jobs | Trigger.dev |
+| Artifacts | Vercel Blob (canvas JSON, spec Markdown) |
+| AI | Google Gemini via Vercel AI SDK |
 
-## Completed
+## Prerequisites
 
-- Design system and UI components (shadcn/ui)
-  - Installed shadcn/ui with dark theme configuration
-  - Added 14 UI components: button, input, select, dialog, tooltip, badge, card, avatar, dropdown-menu, separator, sheet, tabs, alert, alert-dialog
-  - Created lib/utils.ts with cn() helper function
-  - Fixed globals.css semantic tokens (`text-copy-*`, `text-brand`, `bg-bg-*`) so icons and headings are readable on dark backgrounds
-  - Resolved mistaken use of `text-primary` / `text-secondary` (shadcn surface colors) for UI copy
-  - Installed lucide-react for icons
-- Editor chrome (02-editor)
-  - `editor-navbar.tsx`: fixed top bar, sidebar toggle with readable icons, three sections
-  - `project-sidebar.tsx`: overlay Sheet from left, tabs (My Projects / Shared), empty states, New Project button, backdrop closes on outside tap
-  - `dialog-pattern.tsx`: title, description, close, footer using design tokens and `rounded-3xl`
-  - `editor-shell.tsx` + `/editor` route wiring home + sidebar + navbar without pushing canvas content
-- Clerk authentication
-  - ClerkProvider, sign-in/sign-up pages, proxy protection, UserButton in navbar, post-auth redirect to `/editor`
-- Project dialogs (04-project-dialogs)
-  - Create / rename / delete dialogs with slug preview and owned-only sidebar actions
-- Prisma data layer (05-prisma)
-  - `prisma/models/project.prisma`: `Project`, `ProjectCollaborator`, `ProjectStatus` enum
-  - `prisma.config.ts` with multi-file schema (`schema: "prisma"`)
-  - `lib/prisma.ts`: cached singleton; Accelerate when `DATABASE_URL` starts with `prisma+postgres://`, else `@prisma/adapter-pg`
-  - Initial migration `20260531141632_init_projects` applied
-  - Added `pg` dependency and `postinstall` / `db:migrate` scripts
-- Project APIs (06-project-apis)
-  - `GET /api/projects` — list projects for authenticated owner
-  - `POST /api/projects` — create project (`Untitled Project` default name, optional custom `id` for room alignment)
-  - `PATCH /api/projects/[roomId]` — rename (owner only)
-  - `DELETE /api/projects/[roomId]` — delete (owner only)
-  - `401` / `403` / `404` / `400` responses via `lib/api/auth.ts` and `lib/api/responses.ts`
-- Wire editor to APIs (07-wire-editor)
-  - `lib/projects.ts` — server-side `getProjectsForUser()` (owned + shared via collaborator email)
-  - `/editor` and `/editor/[roomId]` server pages fetch projects and pass to client shells
-  - `useProjectActions` hook: create (slug + suffix room ID, POST, navigate), rename (PATCH + refresh), delete (DELETE + redirect or refresh)
-  - Sidebar, dialogs, and list navigation wired to real API data
-  - Project ID doubles as Liveblocks room ID
-- Editor workspace shell (08-editor-workspace-shell)
-  - `lib/project-access.ts` — Clerk identity, owner/collaborator access checks, `getAccessibleProject()`
-  - `/editor/[roomId]` server page: redirect to sign-in, `AccessDenied` for missing/forbidden, workspace shell on success
-  - `components/editor/access-denied.tsx` — lock icon, message, link to `/editor`
-  - `EditorWorkspaceShell` — full-viewport layout with project navbar, canvas placeholder, AI sidebar placeholder
-  - Workspace navbar: project name, Share button, AI toggle, sidebar toggle
-  - Active room highlighted in `ProjectSidebar`
-- Share dialog (09-share-dialog)
-  - `GET/POST /api/projects/[roomId]/collaborators` — list and invite (owner-only for invite)
-  - `DELETE /api/projects/[roomId]/collaborators/[collaboratorId]` — remove (owner-only)
-  - `lib/clerk-users.ts` — Clerk Backend API enrichment for display name and avatar by email
-  - `ShareDialog` — invite by email, collaborator list, remove (owners), read-only list (collaborators), copy link with `Copied!` feedback
-  - Share button wired in workspace navbar
-- Liveblocks setup (10-liveblock-setup)
-  - `liveblocks.config.ts` — `Presence` (cursor, `isThinking`), `UserMeta` (id, name, avatar, color)
-  - `lib/liveblocks.ts` — cached `@liveblocks/node` client (`LIVEBLOCKS_SECRET_KEY`)
-  - `lib/liveblocks-user-color.ts` — deterministic cursor color from user ID palette
-  - `lib/liveblocks-room.ts` — `getOrCreateRoom` for project room IDs (private rooms)
-  - `POST /api/liveblocks-auth` — Clerk auth, project access check, room ensure, session token with user metadata; `403` when access denied
-  - Installed `@liveblocks/node`, `@liveblocks/client`, `@liveblocks/react`
+- Node.js 20+
+- PostgreSQL database
+- Accounts / keys for: [Clerk](https://clerk.com), [Liveblocks](https://liveblocks.io), [Trigger.dev](https://trigger.dev), [Vercel Blob](https://vercel.com/docs/storage/vercel-blob), and [Google AI Studio](https://aistudio.google.com) (Gemini)
 
-## In Progress
+## Getting started
 
-- None.
+1. **Install dependencies**
 
-## Next Up
+   ```bash
+   npm install
+   ```
 
-- Wire `LiveblocksProvider` + `RoomProvider` on the editor workspace (canvas + presence)
+2. **Configure environment**
 
-## Open Questions
+   Copy `.env.example` to `.env` and fill in the values:
 
-- None yet.
+   ```bash
+   cp .env.example .env
+   ```
 
-## Architecture Decisions
+   | Variable | Purpose |
+   | --- | --- |
+   | `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY` | Clerk authentication |
+   | `DATABASE_URL` | PostgreSQL connection string |
+   | `LIVEBLOCKS_SECRET_KEY` | Liveblocks server API (room auth, AI mutations) |
+   | `TRIGGER_SECRET_KEY` | Trigger.dev task execution |
+   | `GEMINI_API_KEY` | Gemini for design + spec generation |
+   | `BLOB_READ_WRITE_TOKEN` | Vercel Blob for canvas snapshots and specs |
 
-- Prisma client uses Accelerate URL when configured; otherwise direct PostgreSQL via `PrismaPg` adapter.
-- Project `id` is the Liveblocks room ID (`{slugified-name}-{suffix}` on create).
-- `/editor` is the project home; `/editor/[roomId]` is the workspace shell.
-- Collaborators stored by email in `ProjectCollaborator`; profile enrichment via Clerk Backend API only (no local user table).
-- Liveblocks uses access-token auth via `prepareSession` + per-request `session.allow(room)` after Prisma access checks; rooms created with `defaultAccesses: []`.
+   The app reads `GEMINI_API_KEY` at runtime. If your `.env.example` lists `GOOGLE_GENERATIVE_AI_API_KEY`, set `GEMINI_API_KEY` to the same value.
 
-## Session Notes
+3. **Run database migrations**
 
-- Fixed `/editor/[roomId]` 404: Next.js requires the same dynamic segment name app-wide (`roomId`); API routes renamed from `[projectId]`; clear `.next` after such changes.
+   ```bash
+   npm run db:migrate
+   ```
+
+4. **Start the dev server**
+
+   ```bash
+   npm run dev
+   ```
+
+   Open [http://localhost:3000](http://localhost:3000). After sign-in, use `/editor` for the project home and `/editor/[roomId]` for a workspace.
+
+5. **Start the Trigger.dev worker** (required for AI design and spec generation)
+
+   In a separate terminal, run the Trigger.dev dev CLI for this project (see [Trigger.dev docs](https://trigger.dev/docs)). Tasks live in `trigger/`.
+
+## Scripts
+
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start Next.js dev server |
+| `npm run build` | Production build |
+| `npm run start` | Start production server |
+| `npm run lint` | Run ESLint |
+| `npm run db:migrate` | Apply Prisma migrations |
+| `npm run db:generate` | Regenerate Prisma client |
+
+## Project structure
+
+```
+app/              Next.js routes and API handlers
+components/       UI (editor canvas, sidebar, dialogs)
+context/          Product, architecture, and feature specs
+hooks/            Client hooks (autosave, AI runs, specs)
+lib/              Shared infrastructure (Prisma, auth, Liveblocks, AI clients)
+prisma/           Database schema and migrations
+trigger/          Trigger.dev background tasks (design agent, spec generation)
+types/            Shared TypeScript types
+```
+
+## Architecture notes
+
+- **Project ID = Liveblocks room ID** — each project maps to one private Liveblocks room.
+- **Storage split** — PostgreSQL holds metadata (projects, collaborators, spec records, task runs); Vercel Blob holds canvas JSON and generated Markdown.
+- **AI work runs in Trigger.dev** — API routes validate access, enqueue tasks, and issue run-scoped tokens; the client tracks progress with `@trigger.dev/react-hooks`.
+- **Canvas state** — synced through `useLiveblocksFlow` in Liveblocks Storage; server-side updates use `mutateFlow` from `@liveblocks/react-flow/node`.
+
+For deeper context, see `context/project-overview.md`, `context/architecture.md`, and `context/progress-tracker.md`.
+
+## License
+
+Private — not for public distribution unless otherwise noted.

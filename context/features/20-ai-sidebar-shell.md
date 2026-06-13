@@ -9,7 +9,7 @@ Complete the existing AI sidebar placeholder and turn it into a proper floating 
 
 2. Add the sidebar header.
    - title: `AI Workspace`
-   - subtitle: `Collaborate with Ghost AI`
+   - subtitle: `Collaborate with Miro AI`
    - small bot icon
    - close button aligned to the right
    - use `text-primary-text` for the title
@@ -43,7 +43,7 @@ Complete the existing AI sidebar placeholder and turn it into a proper floating 
    - show a `Generate Spec` button using `bg-accent text-white`
    - show a demo spec card for now
    - style the card with `bg-elevated` and `border-surface-border`
-   - include a file/spec icon, title, short snippet, and disabled download action
+   - include a file/spec icon, title, short snippet, and disabled download actionF
 
 6. Use the existing project color tokens.
 

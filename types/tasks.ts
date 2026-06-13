@@ -1,7 +1,7 @@
 import { z } from "zod"
 
-export const AI_AGENT_USER_ID = "ghost-ai" as const
-export const AI_AGENT_DISPLAY_NAME = "Ghost AI" as const
+export const AI_AGENT_USER_ID = "miro-ai" as const
+export const AI_AGENT_DISPLAY_NAME = "Miro AI" as const
 export const AI_STATUS_FEED_ID = "ai-status-feed" as const
 export const AI_STATUS_MESSAGE_ID = "ai-status-latest" as const
 export const AI_CHAT_FEED_ID = "ai-chat" as const

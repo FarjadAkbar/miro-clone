@@ -10,7 +10,7 @@ const COLOR_GUIDE = NODE_COLORS.map(
   (entry, index) => `${index}: fill ${entry.fill}, text ${entry.text}`
 ).join("\n")
 
-const SYSTEM_PROMPT = `You are Ghost AI, a system design assistant for a collaborative architecture canvas.
+const SYSTEM_PROMPT = `You are Miro AI, a system design assistant for a collaborative architecture canvas.
 
 Return a JSON plan with canvas actions only. Use these action types:
 - add_node, move_node, resize_node, update_node, delete_node, add_edge, delete_edge

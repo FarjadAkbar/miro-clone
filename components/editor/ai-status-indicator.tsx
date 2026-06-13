@@ -16,7 +16,7 @@ export function AiStatusIndicator() {
         <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin text-accent-ai" />
       ) : null}
       <p className="truncate text-xs text-accent-ai-text">
-        {latestStatus ?? (isGenerating ? "Ghost AI is working…" : "")}
+        {latestStatus ?? (isGenerating ? "Miro AI is working…" : "")}
       </p>
     </div>
   )

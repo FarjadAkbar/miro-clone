@@ -111,4 +111,4 @@ For deeper context, see `context/project-overview.md`, `context/architecture.md`
 
 ## License
 
-Private — not for public distribution unless otherwise noted.
+none

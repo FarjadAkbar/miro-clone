@@ -2,7 +2,7 @@ declare global {
   interface Liveblocks {
     Presence: {
       cursor: { x: number; y: number } | null
-      isThinking: boolean
+      thinking: boolean
     }
     UserMeta: {
       id: string
@@ -10,6 +10,17 @@ declare global {
         name: string
         avatar: string
         color: string
+      }
+    }
+    FeedMessageData: {
+      "ai-status-feed": {
+        text?: string
+      }
+      "ai-chat": {
+        sender: string
+        role: "user" | "assistant"
+        content: string
+        timestamp: number
       }
     }
   }

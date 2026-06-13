@@ -1,0 +1,1 @@
+export const CANVAS_ZOOM_DURATION_MS = 200

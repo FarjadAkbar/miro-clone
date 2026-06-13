@@ -32,8 +32,52 @@ export const DEFAULT_EDGE_COLOR = "#f8fafc"
 export interface CanvasNodeData extends Record<string, unknown> {
   label: string
   color: string
+  textColor: string
   shape: CanvasNodeShape
 }
 
+export interface CanvasEdgeData extends Record<string, unknown> {
+  label: string
+}
+
 export type CanvasNode = Node<CanvasNodeData, typeof CANVAS_NODE_TYPE>
-export type CanvasEdge = Edge<Record<string, never>, typeof CANVAS_EDGE_TYPE>
+export type CanvasEdge = Edge<CanvasEdgeData, typeof CANVAS_EDGE_TYPE>
+
+export const CANVAS_SHAPE_DRAG_TYPE = "application/canvas-shape"
+
+export interface CanvasShapeDragPayload {
+  shape: CanvasNodeShape
+  width: number
+  height: number
+}
+
+export const SHAPE_DEFAULT_SIZES: Record<
+  CanvasNodeShape,
+  { width: number; height: number }
+> = {
+  rectangle: { width: 160, height: 88 },
+  circle: { width: 96, height: 96 },
+  diamond: { width: 132, height: 132 },
+  pill: { width: 152, height: 64 },
+  cylinder: { width: 112, height: 128 },
+  hexagon: { width: 120, height: 120 },
+}
+
+export function textColorForFill(fill: string): string {
+  return (
+    NODE_COLORS.find((entry) => entry.fill === fill)?.text ??
+    DEFAULT_NODE_COLOR.text
+  )
+}
+
+export function resolveNodeTextColor(
+  data: Pick<CanvasNodeData, "color" | "textColor">
+): string {
+  if (data.textColor) {
+    return data.textColor
+  }
+
+  return textColorForFill(data.color)
+}
+
+export type NodeColorPair = (typeof NODE_COLORS)[number]

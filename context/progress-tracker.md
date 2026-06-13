@@ -8,11 +8,9 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Current Goal
 
-- Custom canvas nodes, edges, and presence cursors
+- Spec UI integration (29-spec-ui-integration)
 
 ## Completed
-
-- Design system and UI components (shadcn/ui)
   - Installed shadcn/ui with dark theme configuration
   - Added 14 UI components: button, input, select, dialog, tooltip, badge, card, avatar, dropdown-menu, separator, sheet, tabs, alert, alert-dialog
   - Created lib/utils.ts with cn() helper function
@@ -72,6 +70,104 @@ Update this file whenever the current phase, active feature, or implementation s
   - `EditorFlowCanvas` — `useLiveblocksFlow` (suspense, empty nodes/edges), React Flow with loose connections, `fitView`, `MiniMap`, dot `Background`
   - Workspace shell wired to live canvas; `/editor/[roomId]` page remains server-rendered
   - Installed `@xyflow/react`, `@liveblocks/react-flow`
+- Shape panel (12-shape-panel)
+  - `ShapePanel` — floating pill toolbar at bottom-center with draggable shape icons
+  - `SHAPE_DEFAULT_SIZES` and `CANVAS_SHAPE_DRAG_TYPE` drag payload (shape + width/height)
+  - Canvas wrapper `dragover` / `drop` with `screenToFlowPosition` and Liveblocks node add
+  - `lib/canvas-node-factory.ts` — node ID (`{shape}-{timestamp}-{counter}`), drop parsing, node creation
+  - `CanvasNode` — basic bordered rectangle renderer with centered label (all shapes for now)
+- Node shapes (13-node-shape)
+  - `CanvasNodeShapeView` — CSS shapes (rectangle, pill, circle) and SVG shapes (diamond, hexagon, cylinder) with scaled borders
+  - Selected nodes use `border-brand`; unselected use subtle border
+  - `ShapeDragPreviewProvider` — ghost preview follows cursor during shape panel drag; hidden on drop/cancel
+  - Drop/node creation logic unchanged
+- Node editing (14-node-editing)
+  - `NodeResizer` on selected nodes with min size (48×40) and subtle dark-theme handles
+  - `CanvasNodeLabelEditor` — double-click to edit, centered textarea, live label sync via `onNodesChange`
+  - `CanvasFlowProvider` — collaborative label updates through Liveblocks flow state
+  - Editing closes on blur or Escape; pointer events stopped to avoid canvas drag/pan
+- Node color toolbar (15-nodes-color-toolbar)
+  - `NodeColorToolbar` — floating swatch bar above selected nodes via `NodeToolbar`
+  - 8 predefined fill/text pairs from `NODE_COLORS`; active swatch highlighted with brand border + text-color glow
+  - Hover glow per swatch text color; interactions use `nodrag` / `nopan`
+  - `updateNodeColor` in `CanvasFlowProvider` syncs `color` + `textColor` through Liveblocks `onNodesChange`
+  - `CanvasNodeData.textColor` added; `resolveNodeTextColor` fallback for existing nodes
+- Edge behavior (16-edge-behavior)
+  - `CanvasNodeHandles` — source + target handles on all four sides; white dots, fade in on node hover
+  - `CanvasEdge` — smooth-step routing, dimmed at rest / bright when hovered or selected, `interactionWidth` for easier clicks
+  - Arrow markers via `defaultEdgeOptions`; new connections use `canvasEdge` type
+  - `CanvasEdgeLabelEditor` — double-click to edit at `getSmoothStepPath` midpoint via `EdgeLabelRenderer`; pill badges; growing input; save on blur/Enter/Escape
+  - `updateEdgeLabel` in `CanvasFlowProvider` syncs through Liveblocks `onEdgesChange`
+- Canvas ergonomics (17-canvas-ergonomics)
+  - `CanvasControlBar` — bottom-left pill toolbar (zoom out, fit view, zoom in | undo, redo)
+  - Zoom wired to React Flow with `CANVAS_ZOOM_DURATION_MS` animation
+  - Undo/redo via Liveblocks `useUndo` / `useRedo`; disabled state when history empty
+  - `useKeyboardShortcuts` — `+`/`=`, `-`, `Cmd/Ctrl+Z`, `Cmd/Ctrl+Shift+Z`, `Cmd/Ctrl+Y`; skips editable fields
+  - MiniMap removed
+- Starter templates (18-starter-template)
+  - `starter-templates.ts` — `CanvasTemplate` type, `CANVAS_TEMPLATES` (microservices, CI/CD pipeline, event-driven), bounds helpers, `applyCanvasTemplate` replace import
+  - `starter-templates-modal.tsx` — dialog with scrollable template grid, lightweight SVG previews, per-card import
+  - Workspace navbar **Templates** button opens modal; import clears then replaces nodes/edges via Liveblocks flow changes and `fitView`
+- Presence avatars and cursors (19-presence-avatars-cursor)
+  - `liveblocks.config.ts` — Presence uses `cursor` + `thinking`
+  - `canvas-presence-avatars.tsx` — top-right canvas overlay with collaborator stack (max 5 + overflow), Clerk UserButton, divider when others present
+  - `canvas-presence-cursor.tsx` — colored pointer + name badge for other participants
+  - `Cursors` from `@liveblocks/react-flow` broadcasts pointer position; workspace navbar UserButton removed (home navbar unchanged)
+- AI sidebar shell (20-ai-sidebar-shell)
+  - `editor-ai-sidebar.tsx` — floating right overlay with slide-in animation, header, AI Architect + Specs tabs
+  - AI Architect: empty state, starter chips, local chat UI, auto-resizing textarea, Enter/Shift+Enter handling
+  - Specs: Generate Spec button + static demo spec card with disabled download
+  - Added shadcn `Textarea`; removed placeholder component
+- Canvas autosave (21-canvas-autosave)
+  - `canvasJsonPath` on Project stores Vercel Blob URL; JSON at `canvas/{roomId}.json`
+  - `GET/PUT /api/projects/[roomId]/canvas` — access-checked load/save via Prisma + `@vercel/blob`
+  - `useCanvasAutosave` — debounced PUT, blob restore when Liveblocks room is empty, save status
+  - Workspace navbar **Save** button shows idle / saving / saved / error
+- Design agent API (22-design-agent-api)
+  - `TaskRun` Prisma model — `runId`, `projectId`, `userId`, indexes
+  - `trigger/design-agent.ts` — minimal `design-agent` task (logs/echoes payload)
+  - `POST /api/ai/design` — access-checked trigger + TaskRun record, returns `runId`
+  - `POST /api/ai/design/token` — run ownership verify + Trigger.dev public token
+  - Installed `@trigger.dev/sdk`, added `trigger.config.ts`
+- Design agent logic (23-design-agent-logic)
+  - `trigger/design-agent.ts` — Gemini plan via `@ai-sdk/google`, canvas mutations via `mutateFlow`, status feed + Ghost AI presence, error handling
+  - `lib/design-agent-gemini.ts` — `generateDesignPlan()` with Zod action schema
+  - `lib/canvas-design-actions.ts` — add/move/resize/update/delete nodes, add/delete edges through Liveblocks flow
+  - `lib/liveblocks-ai-agent.ts` — `publishAiStatus`, `setAiAgentPresence`, `clearAiAgentPresence` via `@liveblocks/node`
+  - `types/design-agent-actions.ts` — Zod schemas for canvas actions
+  - `types/tasks.ts` — `AI_AGENT_USER_ID`, feed IDs, status message validation, `isAiGenerationActive()`
+  - `EditorAiSidebar` wired to `POST /api/ai/design`; rendered inside `RoomProvider` in `EditorCanvas`
+  - Installed `ai`, `@ai-sdk/google`, `zod`; aligned `@liveblocks/node` to 3.19.5 for `mutateFlow` type compatibility
+- AI presence state (24-ai-presence-state)
+  - `types/tasks.ts` — `aiStatusFeedMessageSchema` (Zod), `parseAiStatusFeedMessage`, `isAiGenerationActive()`
+  - `hooks/use-ai-generation-state.ts` — subscribes to `ai-status-feed` + Ghost AI `thinking` presence; latest validated status only
+  - `components/editor/ai-status-indicator.tsx` — shared status bar in AI sidebar
+  - Sidebar disables input/send while generating; send button shows spinner; Enter blocked during generation
+  - `canvas-presence-cursor.tsx` — `Loader2` spinner in name badge when `thinking: true`
+- Sidebar chat feed (25-sidebar-chat-feed)
+  - `AI_CHAT_FEED_ID` (`ai-chat`) — separate from `ai-status-feed`
+  - `types/tasks.ts` — `aiChatMessageSchema` (sender, role, content, timestamp)
+  - `hooks/use-ai-chat-feed.ts` — subscribe, validate, send via `useCreateFeedMessage`
+  - `components/editor/ai-chat-message.tsx` — sender, timestamp, content bubbles
+  - `editor-ai-sidebar.tsx` — real-time room chat; input clears on send; error state on failure
+- Design agent frontend (26-design-agent-frontend)
+  - `lib/design-agent-client.ts` — `POST /api/ai/design` + token fetch for `runId` / `publicToken`
+  - `hooks/use-design-agent-run.ts` — `useRealtimeRun` tracks active runs; disables input while running
+  - `hooks/use-ai-chat-feed.ts` — `sendUserMessage` + `sendAssistantMessage` to `ai-chat`
+  - `components/editor/ai-run-status-strip.tsx` — compact status above input during active runs (reads `ai-status-feed`)
+  - `editor-ai-sidebar.tsx` — submit pushes chat + triggers design; completion/error replies in feed; green chat/submit tokens
+  - Installed `@trigger.dev/react-hooks`; added `--color-accent-chat` tokens in `globals.css`
+- Spec generation flow (27-spec-generation-flow)
+  - `POST /api/ai/spec` — validates `roomId`, `chatHistory`, `nodes`, `edges`; access from `roomId` only; triggers `generate-spec`; creates `TaskRun`
+  - `POST /api/ai/spec/token` — run ownership verify; public token scoped to run with `expirationTime: "1h"`
+  - `trigger/generate-spec.ts` — Zod validation, Gemini Markdown generation, run metadata (`status`, `progress`)
+  - `types/spec-agent.ts` — payload + request Zod schemas
+  - `lib/spec-agent-gemini.ts` — `generateSpecMarkdown()` via `@ai-sdk/google`
+- Spec persistence and download (28-spec-persistence-download)
+  - `ProjectSpec` Prisma model — `id`, `projectId`, `filePath`, `createdAt`
+  - `lib/save-project-spec.ts` — uploads Markdown to Vercel Blob at `specs/{projectId}/{specId}.md`; stores URL in Prisma
+  - `trigger/generate-spec.ts` — persists spec after generation; returns `{ markdown, specId }`; metadata includes `specId`
+  - `GET /api/projects/[roomId]/specs/[specId]/download` — access-checked Markdown attachment download
 
 ## In Progress
 
@@ -79,8 +175,7 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Next Up
 
-- Custom canvas node and edge rendering
-- Presence cursors on canvas
+- Spec UI integration (29-spec-ui-integration)
 
 ## Open Questions
 
@@ -93,8 +188,18 @@ Update this file whenever the current phase, active feature, or implementation s
 - `/editor` is the project home; `/editor/[roomId]` is the workspace shell.
 - Collaborators stored by email in `ProjectCollaborator`; profile enrichment via Clerk Backend API only (no local user table).
 - Liveblocks uses access-token auth via `prepareSession` + per-request `session.allow(room)` after Prisma access checks; rooms created with `defaultAccesses: []`.
-- Canvas state synced via `useLiveblocksFlow` in Liveblocks Storage; custom node/edge components deferred.
+- Canvas state synced via `useLiveblocksFlow` in Liveblocks Storage; node shapes rendered via shared `CanvasNodeShapeView`.
+- AI design agent runs as Trigger.dev task; canvas updates use server-side `mutateFlow`; Ghost AI presence via `setPresence` (`ghost-ai` user ID).
+- Shared AI progress uses Liveblocks feed `ai-status-feed` (single latest message) plus presence `thinking` flag.
+- Room chat uses separate Liveblocks feed `ai-chat`; messages validated with Zod before render.
+- Spec generation runs as Trigger.dev `generate-spec` task; `projectId` derived server-side from authenticated `roomId` access.
+- Spec content stored in Vercel Blob; `ProjectSpec` holds metadata + `filePath`; download served through access-checked API route.
 
 ## Session Notes
 
 - Fixed `/editor/[roomId]` 404: Next.js requires the same dynamic segment name app-wide (`roomId`); API routes renamed from `[projectId]`; clear `.next` after such changes.
+- Feature 23: moved `EditorAiSidebar` inside `RoomProvider` so feed/presence hooks work; aligned `@liveblocks/node@3.19.5` with `@liveblocks/react-flow` to fix duplicate `@liveblocks/core` type errors.
+- Feature 25: sidebar chat uses `ai-chat` feed only; design API trigger removed from chat input per feature scope.
+- Feature 26: design submit triggers `/api/ai/design` + token route; `useRealtimeRun` tracks run; canvas updates via Liveblocks only.
+- Feature 27: spec backend at `/api/ai/spec` + token route; Gemini Markdown output via `generate-spec` task.
+- Feature 28: `ProjectSpec` + Blob persistence in generate-spec task; download at `/api/projects/[roomId]/specs/[specId]/download`.

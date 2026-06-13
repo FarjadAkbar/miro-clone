@@ -16,6 +16,7 @@ interface UseCanvasAutosaveOptions {
   edges: CanvasEdge[]
   onNodesChange: OnNodesChange<CanvasNode>
   onEdgesChange: OnEdgesChange<CanvasEdge>
+  isFlowReady?: boolean
   onStatusChange?: (status: CanvasSaveStatus) => void
   onSaveReady?: (saveNow: () => Promise<void>) => void
   onCanvasRestored?: () => void
@@ -27,6 +28,7 @@ export function useCanvasAutosave({
   edges,
   onNodesChange,
   onEdgesChange,
+  isFlowReady = true,
   onStatusChange,
   onSaveReady,
   onCanvasRestored,
@@ -85,7 +87,7 @@ export function useCanvasAutosave({
   }, [onSaveReady, saveNow])
 
   useEffect(() => {
-    if (hydrationCompleteRef.current) {
+    if (!isFlowReady || hydrationCompleteRef.current) {
       return
     }
 
@@ -148,7 +150,15 @@ export function useCanvasAutosave({
     return () => {
       cancelled = true
     }
-  }, [edges, nodes, onCanvasRestored, onEdgesChange, onNodesChange, roomId])
+  }, [
+    edges,
+    isFlowReady,
+    nodes,
+    onCanvasRestored,
+    onEdgesChange,
+    onNodesChange,
+    roomId,
+  ])
 
   useEffect(() => {
     if (!hydrationCompleteRef.current) {

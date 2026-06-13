@@ -36,6 +36,7 @@ import {
   useCanvasAutosave,
   type CanvasSaveStatus,
 } from "@/hooks/use-canvas-autosave"
+import { useFlowStorageReady } from "@/hooks/use-flow-storage-ready"
 import { CANVAS_ZOOM_DURATION_MS } from "@/lib/canvas-control-constants"
 import {
   createCanvasNode,
@@ -79,6 +80,8 @@ function EditorFlowCanvasInner({
       edges: { initial: [] },
     })
 
+  const isFlowReady = useFlowStorageReady()
+
   const handleCanvasRestored = useCallback(() => {
     requestAnimationFrame(() => {
       void reactFlow.fitView({ duration: CANVAS_ZOOM_DURATION_MS, padding: 0.15 })
@@ -91,6 +94,7 @@ function EditorFlowCanvasInner({
     edges,
     onNodesChange,
     onEdgesChange,
+    isFlowReady,
     onStatusChange: onSaveStatusChange,
     onSaveReady,
     onCanvasRestored: handleCanvasRestored,
@@ -163,18 +167,26 @@ function EditorFlowCanvasInner({
 
   const handleImportTemplate = useCallback(
     (template: CanvasTemplate) => {
+      if (!isFlowReady) {
+        return
+      }
+
       applyCanvasTemplate(template, nodes, edges, onNodesChange, onEdgesChange)
 
       requestAnimationFrame(() => {
         void reactFlow.fitView({ duration: CANVAS_ZOOM_DURATION_MS, padding: 0.15 })
       })
     },
-    [edges, nodes, onEdgesChange, onNodesChange, reactFlow]
+    [edges, isFlowReady, nodes, onEdgesChange, onNodesChange, reactFlow]
   )
 
   const handleDrop = useCallback(
     (event: DragEvent<HTMLDivElement>) => {
       event.preventDefault()
+
+      if (!isFlowReady) {
+        return
+      }
 
       const raw = event.dataTransfer.getData(CANVAS_SHAPE_DRAG_TYPE)
       if (!raw) {
@@ -200,7 +212,7 @@ function EditorFlowCanvasInner({
 
       onNodesChange([{ type: "add", item: node }])
     },
-    [onNodesChange, reactFlow]
+    [isFlowReady, onNodesChange, reactFlow]
   )
 
   return (
@@ -211,7 +223,7 @@ function EditorFlowCanvasInner({
       onEdgesChange={onEdgesChange}
     >
       <div
-        className="relative h-full w-full"
+        className="relative h-[90vh] w-full"
         onDragOver={handleDragOver}
         onDrop={handleDrop}
       >

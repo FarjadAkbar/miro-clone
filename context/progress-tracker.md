@@ -8,7 +8,7 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Current Goal
 
-- Spec UI integration (29-spec-ui-integration)
+- Fix Liveblocks flow storage on shape drop (feature 30)
 
 ## Completed
   - Installed shadcn/ui with dark theme configuration
@@ -168,6 +168,13 @@ Update this file whenever the current phase, active feature, or implementation s
   - `lib/save-project-spec.ts` — uploads Markdown to Vercel Blob at `specs/{projectId}/{specId}.md`; stores URL in Prisma
   - `trigger/generate-spec.ts` — persists spec after generation; returns `{ markdown, specId }`; metadata includes `specId`
   - `GET /api/projects/[roomId]/specs/[specId]/download` — access-checked Markdown attachment download
+- Spec UI integration (29-spec-ui-integration)
+  - `GET /api/projects/[roomId]/specs` — metadata list (`id`, `createdAt`, `filename`; no blob URLs)
+  - `hooks/use-project-specs.ts` — fetches spec list for current project
+  - `components/editor/ai-specs-tab.tsx` — scrollable spec list with filename + date; download per item
+  - `components/editor/spec-preview-modal.tsx` — Dialog preview via download endpoint; Markdown render; download action
+  - `components/editor/spec-markdown.tsx` — styled Markdown renderer
+  - Installed `react-markdown`, `@radix-ui/react-scroll-area`; added shadcn `ScrollArea`
 
 ## In Progress
 
@@ -175,7 +182,7 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Next Up
 
-- Spec UI integration (29-spec-ui-integration)
+- Fix Liveblocks flow storage on shape drop (30-fix-flow-storage-shape-drop)
 
 ## Open Questions
 
@@ -203,3 +210,6 @@ Update this file whenever the current phase, active feature, or implementation s
 - Feature 26: design submit triggers `/api/ai/design` + token route; `useRealtimeRun` tracks run; canvas updates via Liveblocks only.
 - Feature 27: spec backend at `/api/ai/spec` + token route; Gemini Markdown output via `generate-spec` task.
 - Feature 28: `ProjectSpec` + Blob persistence in generate-spec task; download at `/api/projects/[roomId]/specs/[specId]/download`.
+- Feature 29: Specs tab lists project specs, preview modal renders Markdown, download via access-checked API routes.
+- Audit (features 12–29): canvas shape/edge tooling exists in code; runtime visibility may need z-index fix. UserButton on canvas is intentional per feature 19. Generate Spec button still unwired.
+- Feature 30 spec: `flow.get is not a function` on shape drop — Liveblocks `"flow"` storage must be a LiveObject before mutations; see `30-fix-flow-storage-shape-drop.md`.

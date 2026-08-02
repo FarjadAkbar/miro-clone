@@ -8,7 +8,7 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Current Goal
 
-- None — foundation phase complete through feature 30
+- None
 
 ## Completed
   - Installed shadcn/ui with dark theme configuration
@@ -181,6 +181,12 @@ Update this file whenever the current phase, active feature, or implementation s
   - `hooks/use-flow-storage-ready.ts` — repairs corrupted `"flow"` storage; returns `isFlowReady` after init
   - `editor-flow-canvas.tsx` — guards shape drop and template import until flow storage is ready
   - `use-canvas-autosave.ts` — waits for `isFlowReady` before Blob restore
+- OpenAI for AI generation (post-30)
+  - Replaced Gemini with OpenAI (`@ai-sdk/openai`) for Design chat and Spec generation
+  - `lib/openai.ts` — `OPENAI_API_KEY` + optional `OPENAI_MODEL` (default `gpt-4o`)
+  - `lib/design-agent-openai.ts`, `lib/spec-agent-openai.ts` — replaced `*-gemini` modules
+  - `lib/canvas-flow-snapshot.ts` — Design chat reads Liveblocks flow before planning (reuse nodes + edges)
+  - Removed `@ai-sdk/google`; ADR `docs/adr/0001-openai-for-ai-generation.md`; `CONTEXT.md` glossary
 
 ## In Progress
 
@@ -207,6 +213,7 @@ Update this file whenever the current phase, active feature, or implementation s
 - Room chat uses separate Liveblocks feed `ai-chat`; messages validated with Zod before render.
 - Spec generation runs as Trigger.dev `generate-spec` task; `projectId` derived server-side from authenticated `roomId` access.
 - Spec content stored in Vercel Blob; `ProjectSpec` holds metadata + `filePath`; download served through access-checked API route.
+- Design chat and Spec generation use OpenAI (`gpt-4o` default); Design chat plans against a Liveblocks canvas snapshot so existing nodes are reused.
 
 ## Session Notes
 
@@ -219,3 +226,4 @@ Update this file whenever the current phase, active feature, or implementation s
 - Feature 29: Specs tab lists project specs, preview modal renders Markdown, download via access-checked API routes.
 - Audit (features 12–29): canvas shape/edge tooling exists in code; runtime visibility may need z-index fix. UserButton on canvas is intentional per feature 19. Generate Spec button still unwired.
 - Feature 30: flow storage repair on load; shape drop/template/autosave guarded until `"flow"` LiveObject is valid; Liveblocks packages aligned to 3.19.5.
+- Switched AI from Gemini to OpenAI; Design chat now receives current canvas snapshot for reuse/connect quality.

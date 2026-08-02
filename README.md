@@ -23,7 +23,7 @@ A real-time collaborative system design workspace. Describe an architecture in p
 | Realtime canvas | Liveblocks, React Flow (`@xyflow/react`) |
 | Background jobs | Trigger.dev |
 | Artifacts | Vercel Blob (canvas JSON, spec Markdown) |
-| AI | Google Gemini via Vercel AI SDK |
+| AI | OpenAI (`gpt-4o` by default) via Vercel AI SDK |
 
 ## Prerequisites
 
@@ -53,10 +53,11 @@ A real-time collaborative system design workspace. Describe an architecture in p
    | `DATABASE_URL` | PostgreSQL connection string |
    | `LIVEBLOCKS_SECRET_KEY` | Liveblocks server API (room auth, AI mutations) |
    | `TRIGGER_SECRET_KEY` | Trigger.dev task execution |
-   | `GEMINI_API_KEY` | Gemini for design + spec generation |
+   | `OPENAI_API_KEY` | OpenAI for Design chat + spec generation |
+   | `OPENAI_MODEL` | Optional; defaults to `gpt-4o` |
    | `BLOB_READ_WRITE_TOKEN` | Vercel Blob for canvas snapshots and specs |
 
-   The app reads `GEMINI_API_KEY` at runtime. If your `.env.example` lists `GOOGLE_GENERATIVE_AI_API_KEY`, set `GEMINI_API_KEY` to the same value.
+   Set `OPENAI_API_KEY` in `.env`. Restart the Next.js and Trigger.dev workers after changing AI env vars.
 
 3. **Run database migrations**
 
@@ -74,7 +75,15 @@ A real-time collaborative system design workspace. Describe an architecture in p
 
 5. **Start the Trigger.dev worker** (required for AI design and spec generation)
 
-   In a separate terminal, run the Trigger.dev dev CLI for this project (see [Trigger.dev docs](https://trigger.dev/docs)). Tasks live in `trigger/`.
+   In a second terminal:
+
+   ```bash
+   npm run trigger:dev
+   ```
+
+   Use your project ref from the Trigger.dev dashboard in `TRIGGER_PROJECT_REF` (also set in `trigger.config.ts`). Keep this process running alongside `npm run dev`.
+
+   Trigger.dev v3 is retired — this repo uses SDK v4 (`@trigger.dev/sdk`). If triggers return “v3 is no longer supported”, run `npm run trigger:dev` (or `npx trigger.dev@latest deploy` for cloud) so the environment is on v4.
 
 ## Scripts
 
@@ -85,7 +94,7 @@ A real-time collaborative system design workspace. Describe an architecture in p
 | `npm run start` | Start production server |
 | `npm run lint` | Run ESLint |
 | `npm run db:migrate` | Apply Prisma migrations |
-| `npm run db:generate` | Regenerate Prisma client |
+| `npm run trigger:dev` | Start Trigger.dev local worker (v4) |
 
 ## Project structure
 

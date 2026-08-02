@@ -8,7 +8,10 @@ export function CanvasPresenceCursor({
   userId,
   connectionId,
 }: CursorsCursorProps) {
+  console.log("userId", userId)
+  console.log("connectionId", connectionId)
   const { user } = useUser(userId)
+  console.log("user", user)
   const thinking = useOther(connectionId, (other) => other.presence.thinking)
   const color = user.color || "var(--color-brand)"
   const name = user.name || "Guest"

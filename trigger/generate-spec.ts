@@ -1,5 +1,5 @@
-import { logger, metadata, task } from "@trigger.dev/sdk/v3"
-import { generateSpecMarkdown } from "@/lib/spec-agent-gemini"
+import { logger, metadata, task } from "@trigger.dev/sdk"
+import { generateSpecMarkdown } from "@/lib/spec-agent-openai"
 import { saveProjectSpec } from "@/lib/save-project-spec"
 import {
   GENERATE_SPEC_TASK_ID,

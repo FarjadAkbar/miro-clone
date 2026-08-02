@@ -3,7 +3,7 @@ import { unauthorizedResponse } from "@/lib/api/responses"
 
 export async function requireUserId(): Promise<string | Response> {
   const { userId } = await auth()
-
+  console.log(userId, "userId");
   if (!userId) {
     return unauthorizedResponse()
   }

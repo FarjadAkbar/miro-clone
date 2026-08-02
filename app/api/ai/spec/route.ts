@@ -1,4 +1,4 @@
-import { tasks } from "@trigger.dev/sdk/v3"
+import { tasks } from "@trigger.dev/sdk"
 import { NextResponse } from "next/server"
 import { parseSpecTriggerBody } from "@/lib/api/spec"
 import {

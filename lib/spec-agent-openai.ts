@@ -1,5 +1,5 @@
-import { google } from "@ai-sdk/google"
 import { generateText } from "ai"
+import { getOpenAIModel } from "@/lib/openai"
 import type { GenerateSpecPayload } from "@/types/spec-agent"
 
 const SYSTEM_PROMPT = `You are Miro AI, a technical writing assistant for system architecture diagrams.
@@ -51,10 +51,6 @@ function formatCanvas(payload: GenerateSpecPayload): string {
 export async function generateSpecMarkdown(
   payload: GenerateSpecPayload
 ): Promise<string> {
-  if (!process.env.GEMINI_API_KEY) {
-    throw new Error("GEMINI_API_KEY is not set")
-  }
-
   const prompt = `Project room: ${payload.roomId}
 
 Canvas:
@@ -66,7 +62,7 @@ ${formatChatHistory(payload.chatHistory)}
 Generate the Markdown technical specification.`
 
   const { text } = await generateText({
-    model: google("gemini-2.5-flash"),
+    model: getOpenAIModel(),
     system: SYSTEM_PROMPT,
     prompt,
   })

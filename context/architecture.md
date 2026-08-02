@@ -11,6 +11,7 @@
 | Canvas           | Liveblocks + React Flow | Real-time collaborative canvas, presence, and cursors          |
 | Background tasks | Trigger.dev             | Durable AI generation workflows                                |
 | Artifact storage | Vercel Blob             | Canvas snapshots and generated Markdown specs                  |
+| AI               | OpenAI (`gpt-4o` default) | Design chat + Spec generation via Vercel AI SDK              |
 
 ## System Boundaries
 

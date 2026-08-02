@@ -1,4 +1,4 @@
-import { auth } from "@trigger.dev/sdk/v3"
+import { auth } from "@trigger.dev/sdk"
 import { NextResponse } from "next/server"
 import { parseSpecTokenBody } from "@/lib/api/spec"
 import {

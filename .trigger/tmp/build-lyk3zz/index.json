@@ -1,0 +1,32 @@
+{
+  "configPath": "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\trigger.config.mjs",
+  "customConditions": [
+  ],
+  "prompts": [
+  ],
+  "queues": [
+  ],
+  "runtime": "node",
+  "runtimeVersion": "20.19.0",
+  "skills": [
+  ],
+  "tasks": [
+    {
+      "entryPoint": "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\design-agent.mjs",
+      "filePath": "trigger/design-agent.ts",
+      "id": "design-agent",
+      "maxDuration": 300
+    },
+    {
+      "entryPoint": "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\generate-spec.mjs",
+      "filePath": "trigger/generate-spec.ts",
+      "id": "generate-spec",
+      "maxDuration": 300
+    }
+  ],
+  "timings": {
+    "trigger/design-agent.ts": 467.68269999999984,
+    "trigger/generate-spec.ts": 732.7433000000001
+  },
+  "workerEntryPoint": "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\dev-run-worker.mjs"
+}

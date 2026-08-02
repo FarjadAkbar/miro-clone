@@ -1,0 +1,126 @@
+{
+  "build": {
+  },
+  "cliPackageVersion": "4.5.9",
+  "config": {
+    "dirs": [
+      "./trigger"
+    ],
+    "project": "proj_ymmuhxcdeaypichluwwa"
+  },
+  "configPath": "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\trigger.config.mjs",
+  "contentHash": "4a01a5b68ddf8615f8bbe9c6654c5f77",
+  "customConditions": [
+  ],
+  "deploy": {
+    "env": {
+    }
+  },
+  "environment": "dev",
+  "externals": [
+    {
+      "name": "import-in-the-middle",
+      "version": "3.0.1"
+    }
+  ],
+  "files": [
+    {
+      "entry": "trigger/design-agent.ts",
+      "out": "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\design-agent.mjs"
+    },
+    {
+      "entry": "trigger/generate-spec.ts",
+      "out": "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\generate-spec.mjs"
+    }
+  ],
+  "indexWorkerEntryPoint": "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\dev-index-worker.mjs",
+  "otelImportHook": {
+    "include": [
+    ]
+  },
+  "outputHashes": {
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\chunk-3IXM6UPX.mjs": "awo73NNxvZE",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\chunk-3IXM6UPX.mjs.map": "od4wbZcg1sM",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\chunk-75NHWB6H.mjs": "SIk0Q7qqyXI",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\chunk-75NHWB6H.mjs.map": "74gC79nLnsU",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\chunk-AHQR5FST.mjs": "i1z2OOczlrM",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\chunk-AHQR5FST.mjs.map": "6QcdPb8EykU",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\chunk-E4LDRTF5.mjs": "gZiWNQ3H4WQ",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\chunk-E4LDRTF5.mjs.map": "wj+RWTmiv7o",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\chunk-S2KBVKJZ.mjs": "1dyBCTAVb24",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\chunk-S2KBVKJZ.mjs.map": "4dQkY9FcRhM",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\chunk-VM45VNLD.mjs": "Z02GKGF0Q2s",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\chunk-VM45VNLD.mjs.map": "pYys5IhIvtQ",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\chunk-XCQQDT7A.mjs": "07XpNamL1hs",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\chunk-XCQQDT7A.mjs.map": "LMPzUuAiOIM",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\chunk-XXOIZWSI.mjs": "nuJIDNEL3v0",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\chunk-XXOIZWSI.mjs.map": "kvznS+vkM1Q",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\chunk-ZC6ABPS5.mjs": "/ZhLNlQidb4",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\chunk-ZC6ABPS5.mjs.map": "ez5wSxLCqL4",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\crypto.node-755GINV4.mjs": "PZZGeqgy4Pg",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\crypto.node-755GINV4.mjs.map": "0b4tlwmkM3g",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\crypto.node-IUJNKNAT.mjs": "nua1AXILzEY",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\crypto.node-IUJNKNAT.mjs.map": "OMZqUsWGyrQ",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\design-agent.mjs": "tRo5yFvg6Wk",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\design-agent.mjs.map": "pUtYPEojs/I",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\dev-index-worker.mjs": "9yF7wmD4PcQ",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\dev-index-worker.mjs.map": "F6cCbUTQJY0",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\dev-run-worker.mjs": "kER4qTkX/zo",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\dev-run-worker.mjs.map": "/2d44p0/RKQ",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\esm-OB5CVZBP.mjs": "6IUc+5C92T4",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\esm-OB5CVZBP.mjs.map": "VON93E1In1A",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\esm-XVMPDFTY.mjs": "FZRefzXTLcc",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\esm-XVMPDFTY.mjs.map": "OLJawcVtZBU",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\generate-spec.mjs": "Job3LZBwcQ4",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\generate-spec.mjs.map": "PcM7FhbwEIE",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\getMachineId-bsd-LZBNNP26.mjs": "LkjKKio/ZtE",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\getMachineId-bsd-LZBNNP26.mjs.map": "IaWKbxcle6U",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\getMachineId-darwin-BSLAFCS3.mjs": "gqBU91PeI8k",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\getMachineId-darwin-BSLAFCS3.mjs.map": "p48IXrlYHEc",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\getMachineId-linux-NZ5MV55N.mjs": "TnDnPyByAEQ",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\getMachineId-linux-NZ5MV55N.mjs.map": "ecr5ndUILR8",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\getMachineId-unsupported-QAQMCGN7.mjs": "TOCkHPWtdVo",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\getMachineId-unsupported-QAQMCGN7.mjs.map": "KiXyG0oIj7M",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\getMachineId-win-MERMVMHY.mjs": "KOxNjmjyvs4",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\getMachineId-win-MERMVMHY.mjs.map": "2aFex6XdFAI",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\lib-WBFRSD3X.mjs": "JkrS9Rl/LfQ",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\lib-WBFRSD3X.mjs.map": "hxUUgf/hnII",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\s2s-B5T2X7OU.mjs": "rrh2jo/iZjU",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\s2s-B5T2X7OU.mjs.map": "BrWFGTrMb1s",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\s2s-W3DSFVY4.mjs": "cO0N186+MWU",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\s2s-W3DSFVY4.mjs.map": "i3uCo0MGzsU",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\token-6D4BCRBE.mjs": "EgsrpA2P+gg",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\token-6D4BCRBE.mjs.map": "Pq/VKTEig0s",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\token-util-U6XC3RIQ.mjs": "FlSsHg1bGwA",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\token-util-U6XC3RIQ.mjs.map": "0b4tlwmkM3g",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\trigger.config.mjs": "jxJKyZBhDTA",
+    "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\trigger.config.mjs.map": "hnKdLuSnn30"
+  },
+  "outputPath": "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz",
+  "packageVersion": "4.5.9",
+  "runWorkerEntryPoint": "E:\\projects\\miro-clone\\.trigger\\tmp\\build-lyk3zz\\dev-run-worker.mjs",
+  "runtime": "node",
+  "sources": {
+    "package.json": {
+      "contentHash": "b64dffadd54f312c70893b24a335d791",
+      "contents": "eJyNVV1zoyAUfc+vcPJcUIxJmzz1YX9HZxBuLSuCA2jT7fS/74CoNI2z+6b3HO7H8XL83GXZXtEO9pds3wmjEZNawf7Bx0cwVmjloQITXExR99FPbM0HGZm9ESN1PuzMACFkmRG9s/tL9rnLsizbcxj9MQVXl/nnhylcD0LyBZjeImQdNW6BprcISaECAjY8xWivrRPKOiqlB3sjbEezBhQY311k8frSicZM/c6kGEk74/VlObqdzRnRNGAu83j9NYshzGF8ltSBnQbeZdlXkIZDD4qDYgISfZ6pQJa3ue5BUeFzvRxwgc/FXOmZSTBt7sX4bQP+iCtc3sDDdJRgUuH1qBQj1FKz1uZMCpjEezlgcsbHeySlOfyDYoCyf6UJHPQq9fs94qRoTjntHRjUN3Gop6TxyEma/o4bysUVDSKWohKMQ1xQqZtZB0yOm/SROmpWItki/ndGbnTP9btCHagh8EvPP23xLTNaSkQN0Ji9xGRzPAsSouglLvF2VuipoU6voz1tUqV2S+Vqi+VobdfpD5s0raUT/ZJvrZrcich907oNOSt8xOe7RMvbn4QRDAOZ11LXUYh00a8fftuS5SQlJmQlxJt1wgUui2VcJqm1aKRGUMUA0cG9aSPcR+AW+BGTlWmv62ddrEI7UONU79ullAMTHFDSDiaPazcdda7XTLMW2VZIGfRohHsb6suK5RGLh7wBeB45pSsQb88TJqc1/1KXnNOvG1dVd1tQR03rt3hqeTV/73dUyHehOOrANLNHJCX/6ODmLxWu8CH1vPHXfdubEzJrc2/gzE6btu6i/+MkllQW3kYqcoOvAhzx7dlE//M9aNYigeOfxQdvYohp9SoatPEdgmH9dKpkzO/jhTbCzzLEj0Gz3ddfNcwTgw=="
+    },
+    "trigger.config.ts": {
+      "contentHash": "e1f70957ff3341d707deb0a4595e17da",
+      "contents": "eJxVjUELgjAYhu/7FR87FcgUunkxKJO6FMNbhAz3zVa6yTZFEP97GF26vTw8D6/ueusCzCBRaYMHa5RuYAHlbAd0H5xuGnRM4hh7+aaE4PQNJCoxtOEv28wEoHf2hXVI11Gj9wzNyEp+LoqcVzd+veSHsuL5CbIM6CpXfStqfNpWoqMRAZDa+RTulMW/d/pYcSem4+BE0NaksEuSiCxb8gHxxT+G"
+    },
+    "trigger/design-agent.ts": {
+      "contentHash": "16faf81a6776189e26487ad54580d0c3",
+      "contents": "eJytVNtu2kAQffdXjKw8gGRI20dLtEVJGqFWUVR4h409mBVm19odhyBkqV/TD+uXVHszYIiaSOXFeDxzzuyZs8M3lVQEeyhlUaBKgJheQwNLJTcQfyXFTXiY4/O1ztdxxEM+q6pyd4uaF2KcEZdCH6quS/50nTHxzPQgtykD5nKOAAqkG5vyrZTbqWCVXkm6jLEs5XagfcoJhEDFCF0bjyUTnfpAXqCggaxQMH4ojwCyEpka87H5/qhQo8gwiQCq+qnkejXmU2JUaxPSSGeJp2Qlf8anUmZrPWDccZ6Q3d5NJ/cP8/H93cNsPhtPv88ntwaZdhWCV9Lis10pWX4Mb1L0yWniKMIXC51JoQnyQ/3MTHBkB9kzvDxPX+VWtUiB6Z3IoFc53vRCL30YfbZnAE+3h0rJTUUJKCk3kxwaGIEHiGye89OQi6XsxQ4RbOegiSnCPE5g76sTj/YDRUGr1L8NS/sKTd8hktr5HgDYlnHqjqkX0OKpoeCi8LIEo3Ap/vz6HfdPQM4H2+IENoCsVlqqFPbwksLHTx8S2NknNEmbQysu1lwUKZCqMcRD9//s+Sey3LSc1UoZmZz3j/t10rs4jDzexWvkUd9KPRGEqlJoJdvJWvkJnJNX5o4dqLvXrxdc4Zps+S+ZwUIFCOuGVknfWPvulseNrAWltm7o14m3yFu1fpVgMTbbzJz+an8Bvwmi11XOCM1QFr62w3i+FVuVj3GTcOfmLpB4gx3dM/PjS+iFD4fou4x7MG9yErtsVi9i+/e9HvajzeSmKpFw2Llql9Zt16oKqVbif5jBPs3oKFtBD5U6ltHZeYNaswJh1KLbNOBCExMZyiXc2cAX92EYCtL2rIfVAkvGS8zjjultYWcF+szjDRiQ36r1wgM6qBSu9h6hWbxfdFopuXVHjIJ2TRI1/egvM8WaUQ=="
+    },
+    "trigger/generate-spec.ts": {
+      "contentHash": "b083075fc085d2688b395e5f6deadca0",
+      "contents": "eJyNk1uL2zAQhd/9KwY9OeA4LaVQAmm7bEMbemFp8h6m1sRRY0tGGicNi/978U25kzxaPjPnm6ORygtjGV4hM2lKNoKcGCUyRsDoNlDBypocxGe2qhbEkrYjJzciUH1lSposMs0LSn6i3Uiz04e6Uab+jFxByRBT0jw0BWlUR+UOt/RizV9KuO5wXolbGhbt72Hd5lAZAHyd/pr+flpMl/OX6fNy8TT/vpx9iQI4YXrBfWZQzpM15RgFh/68L8gdsYkgoH9N78RoxydNFnUYkyaTsHZWcnzb3ZZ6DOj2OoGwaN3HUOqNNjs9gMnHhh26yGOlVyYUzeydozIaHKNlkmIQNFq2+64K/BXFjjgUjpFLJyIQW8yURFY6FYNO2g6idFEyTG6nEhdoHfWsneUdwM6NpIg8GYA1Jp/JcWsZt1+R/6uNpGdTau4F9YGLM9Iprw8ykumprD64lCVr5BNZffBNOTZ2fyau/Ey3wusnOwrvVFpYk1pytfhN/O69b9hGnPeLPwHcoeKrryJsMO+iONw+iPHhHKNe5pn0EGdvq/WPu+c0k5HHvsuUmLzIiOk+1dvripZMRB3iYzvmXR9fsbb90ZIYzaT5R7MOYz/wzf2wxKXV8OqVPTFUjaKCBDlZQ0jWGjvwXN0akHOYEkwOu1zLQGnHqBMyK5g2B5/aH3FfMIaL4VeoMpLiLKim7DKpThzV4F3L6sZF+Dvtaq7LGh8R9d18Pry2ZtfCt3kEAFUUVIPgPypT/o0="
+    },
+    "tsconfig.json": {
+      "contentHash": "02fc19ad21338c2ab820a70136310db4",
+      "contents": "eJxtUU1Lw0AQvedXLHMMbaJehJ4E6cFiEfRYimyyQ7t2v9id1EjJf5fdJNVET8O892b2vdlLxhjUVjup0L84ktYEWLFLxhhjQNwfkGDFYP12d3N7D4seV7KCFduBsBoWLJZCEnpeKYw9BoMtwX5Qc6Xs5yauJd/gAIaTdM+yejxifZox5GVNU8zYtZYzDMPWikbhkyH01k1JnajofDAzwV8xWNXEsFFRNUYo9KPER/KMm2DNdtzya7MMVnFC0XOzVB+hjRs98pqWsRmHTO1RoyGupgNONQeZTr5LABtO36fmOkVIAQa4S3U8reN0/PkvxuChzNPPFGUO+2wc6KI8mlCNwOtbae8SzbkQBYXRap6X+d/2mqSIQyV9OQzlTNpTAs//06nVFGKS5B+wvRoCYwW+6+Gm+6zLvgEbXbUJ"
+    }
+  },
+  "target": "dev"
+}

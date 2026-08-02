@@ -68,7 +68,7 @@ export async function getAccessibleProject(
   if (!identity) {
     return { status: "unauthenticated" }
   }
-
+  console.log(roomId, "room id");
   const project = await getProjectByRoomId(roomId)
 
   if (!project) {

@@ -57,12 +57,17 @@ export function AiSpecsTab({ roomId }: AiSpecsTabProps) {
           <p className="text-xs text-state-error">{error}</p>
         ) : specs.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-3 py-8 text-center">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-bg-subtle text-accent-ai-text">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent-ai/15 text-accent-ai">
               <FileText className="h-5 w-5" />
             </div>
-            <p className="max-w-[220px] text-xs text-copy-muted">
-              Generated specs will appear here with preview and download options.
-            </p>
+            <div className="max-w-[240px] space-y-1">
+              <p className="text-sm font-medium text-copy-secondary">
+                No specs yet
+              </p>
+              <p className="text-xs text-copy-muted">
+                Use Generate Spec above to turn your canvas into a Markdown technical specification.
+              </p>
+            </div>
           </div>
         ) : (
           <ScrollArea className="min-h-0 flex-1">

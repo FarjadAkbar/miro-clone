@@ -195,15 +195,19 @@ Update this file whenever the current phase, active feature, or implementation s
   - Ignored in editable fields; React Flow `deleteKeyCode` disabled to avoid double delete
 - Empty canvas hint (#6)
   - `CanvasEmptyHint` when `nodes.length === 0`; pointer-events-none so pan/zoom/drop still work
+- Change node shape after drop (#7)
+  - `NodeShapeToolbar` with `NODE_SHAPES`; `updateNodeShape` via Liveblocks `onNodesChange`
+  - Shared `CanvasShapeIcon`; keeps current width/height on shape change
+- Specs tab empty state (#8)
+  - Friendlier empty copy pointing to Generate Spec; matches AI sidebar empty-state styling
 
 ## In Progress
 
-- Stacked UX polish issues (#4–#8)
+- None.
 
 ## Next Up
 
-- #7 Change node shape after drop
-- #8 Specs tab empty state
+- None yet.
 
 ## Open Questions
 

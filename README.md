@@ -1,7 +1,10 @@
 # Miro AI
 
 A real-time collaborative system design workspace. Describe an architecture in plain English, let an AI agent map it onto a shared canvas, refine it with collaborators, and generate a Markdown technical specification from the resulting graph.
-`https://miro-clone-two-mauve.vercel.app`
+
+**Live demo:** [miro-clone-two-mauve.vercel.app](https://miro-clone-two-mauve.vercel.app)
+
+![Miro AI editor — WhatsApp system design on the collaborative canvas with the AI Architect sidebar](./public/Screenshot.png)
 
 ## Features
 
@@ -9,7 +12,7 @@ A real-time collaborative system design workspace. Describe an architecture in p
 - **Collaborative canvas** — Liveblocks + React Flow with live cursors, presence, shapes, edges, undo/redo, and zoom controls
 - **Starter templates** — Import prebuilt system designs (microservices, CI/CD, event-driven, and more)
 - **Canvas autosave** — Debounced snapshots to Vercel Blob with manual save status in the navbar
-- **AI design agent** — Submit prompts from the sidebar; Gemini plans canvas mutations via Trigger.dev
+- **AI design agent** — Submit prompts from the sidebar; OpenAI plans canvas mutations via Trigger.dev
 - **Spec generation** — Generate, preview, and download Markdown specs from the current canvas and chat history
 - **Sharing** — Invite collaborators by email with Clerk profile enrichment
 
@@ -30,7 +33,7 @@ A real-time collaborative system design workspace. Describe an architecture in p
 
 - Node.js 20+
 - PostgreSQL database
-- Accounts / keys for: [Clerk](https://clerk.com), [Liveblocks](https://liveblocks.io), [Trigger.dev](https://trigger.dev), [Vercel Blob](https://vercel.com/docs/storage/vercel-blob), and [Google AI Studio](https://aistudio.google.com) (Gemini)
+- Accounts / keys for: [Clerk](https://clerk.com), [Liveblocks](https://liveblocks.io), [Trigger.dev](https://trigger.dev), [Vercel Blob](https://vercel.com/docs/storage/vercel-blob), and [OpenAI](https://platform.openai.com)
 
 ## Getting started
 
@@ -117,7 +120,7 @@ types/            Shared TypeScript types
 - **AI work runs in Trigger.dev** — API routes validate access, enqueue tasks, and issue run-scoped tokens; the client tracks progress with `@trigger.dev/react-hooks`.
 - **Canvas state** — synced through `useLiveblocksFlow` in Liveblocks Storage; server-side updates use `mutateFlow` from `@liveblocks/react-flow/node`.
 
-For deeper context, see `context/project-overview.md`, `context/architecture.md`, and `context/progress-tracker.md`.
+For deeper context, see `context/project-overview.md`, `context/architecture-context.md`, and `context/progress-tracker.md`.
 
 ## License
 

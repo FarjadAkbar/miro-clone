@@ -14,11 +14,13 @@ import {
   type CanvasEdgeData,
   type CanvasNode,
   type CanvasNodeData,
+  type CanvasNodeShape,
 } from "@/types/canvas"
 
 interface CanvasFlowContextValue {
   updateNodeLabel: (nodeId: string, label: string) => void
   updateNodeColor: (nodeId: string, color: string, textColor: string) => void
+  updateNodeShape: (nodeId: string, shape: CanvasNodeShape) => void
   updateEdgeLabel: (edgeId: string, label: string) => void
 }
 
@@ -104,6 +106,13 @@ export function CanvasFlowProvider({
     [updateNodeData]
   )
 
+  const updateNodeShape = useCallback(
+    (nodeId: string, shape: CanvasNodeShape) => {
+      updateNodeData(nodeId, { shape })
+    },
+    [updateNodeData]
+  )
+
   const updateEdgeLabel = useCallback(
     (edgeId: string, label: string) => {
       updateEdgeData(edgeId, { label })
@@ -113,7 +122,12 @@ export function CanvasFlowProvider({
 
   return (
     <CanvasFlowContext.Provider
-      value={{ updateNodeLabel, updateNodeColor, updateEdgeLabel }}
+      value={{
+        updateNodeLabel,
+        updateNodeColor,
+        updateNodeShape,
+        updateEdgeLabel,
+      }}
     >
       {children}
     </CanvasFlowContext.Provider>

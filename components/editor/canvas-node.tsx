@@ -1,12 +1,19 @@
 "use client"
 
-import { NodeResizer, NodeToolbar, Position, type NodeProps } from "@xyflow/react"
+import {
+  NodeResizer,
+  NodeToolbar,
+  Position,
+  useReactFlow,
+  type NodeProps,
+} from "@xyflow/react"
 import { useCallback, useState } from "react"
 import { useCanvasFlow } from "@/components/editor/canvas-flow-context"
 import { CanvasNodeLabelEditor } from "@/components/editor/canvas-node-label-editor"
 import { CanvasNodeHandles } from "@/components/editor/canvas-node-handles"
 import { CanvasNodeShapeView } from "@/components/editor/canvas-node-shape"
 import { NodeColorToolbar } from "@/components/editor/node-color-toolbar"
+import { NodeDeleteButton } from "@/components/editor/node-delete-button"
 import {
   MIN_NODE_HEIGHT,
   MIN_NODE_WIDTH,
@@ -14,6 +21,7 @@ import {
 import { resolveNodeTextColor, type CanvasNode } from "@/types/canvas"
 
 export function CanvasNode({ id, data, selected }: NodeProps<CanvasNode>) {
+  const { deleteElements } = useReactFlow()
   const { updateNodeLabel, updateNodeColor } = useCanvasFlow()
   const [isEditing, setIsEditing] = useState(false)
   const textColor = resolveNodeTextColor(data)
@@ -32,13 +40,24 @@ export function CanvasNode({ id, data, selected }: NodeProps<CanvasNode>) {
     [id, updateNodeColor]
   )
 
+  const handleDelete = useCallback(() => {
+    if (isEditing) {
+      return
+    }
+
+    void deleteElements({ nodes: [{ id }] })
+  }, [deleteElements, id, isEditing])
+
   return (
     <>
       <NodeToolbar isVisible={selected} position={Position.Top} offset={12}>
-        <NodeColorToolbar
-          activeFill={data.color}
-          onSelect={handleColorSelect}
-        />
+        <div className="flex items-center gap-1.5">
+          <NodeColorToolbar
+            activeFill={data.color}
+            onSelect={handleColorSelect}
+          />
+          <NodeDeleteButton disabled={isEditing} onDelete={handleDelete} />
+        </div>
       </NodeToolbar>
       <NodeResizer
         isVisible={selected}

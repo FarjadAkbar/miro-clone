@@ -41,7 +41,7 @@ export function NodeShapeToolbar({
             className={cn(
               "flex h-7 w-7 items-center justify-center rounded-full transition-colors",
               isActive
-                ? "bg-accent-dim text-brand"
+                ? "bg-accent-primary-dim text-accent-primary"
                 : "text-copy-secondary hover:bg-bg-subtle hover:text-copy-primary"
             )}
           >

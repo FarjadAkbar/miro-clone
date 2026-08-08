@@ -221,6 +221,7 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Session Notes
 
+- Workspace navbar: board title absolutely centered in the full header width (`left-1/2 -translate-x-1/2`) so unequal left/right action groups no longer bias it; truncates with ellipsis via `max-w-[min(40vw,calc(100%-22rem))]`.
 - Fixed `/editor/[roomId]` 404: Next.js requires the same dynamic segment name app-wide (`roomId`); API routes renamed from `[projectId]`; clear `.next` after such changes.
 - Feature 23: moved `EditorAiSidebar` inside `RoomProvider` so feed/presence hooks work; aligned `@liveblocks/node@3.19.5` with `@liveblocks/react-flow` to fix duplicate `@liveblocks/core` type errors.
 - Feature 25: sidebar chat uses `ai-chat` feed only; design API trigger removed from chat input per feature scope.

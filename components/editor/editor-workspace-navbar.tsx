@@ -51,8 +51,8 @@ export function EditorWorkspaceNavbar({
   onSaveClick,
 }: EditorWorkspaceNavbarProps) {
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 flex h-14 shrink-0 items-center border-b border-surface-border bg-bg-surface px-4">
-      <div className="flex items-center gap-2">
+    <header className="fixed top-0 left-0 right-0 z-50 flex h-14 shrink-0 items-center justify-between border-b border-surface-border bg-bg-surface px-4">
+      <div className="relative z-10 flex items-center gap-2">
         <Button
           type="button"
           variant="ghost"
@@ -69,13 +69,11 @@ export function EditorWorkspaceNavbar({
         </Button>
       </div>
 
-      <div className="flex flex-1 items-center justify-center px-4">
-        <h1 className="truncate text-sm font-semibold text-copy-primary sm:text-base">
-          {projectName}
-        </h1>
-      </div>
+      <h1 className="pointer-events-none absolute left-1/2 max-w-[min(40vw,calc(100%-22rem))] -translate-x-1/2 truncate text-center text-sm font-semibold text-copy-primary sm:text-base">
+        {projectName}
+      </h1>
 
-      <div className="flex items-center gap-1">
+      <div className="relative z-10 flex items-center gap-1">
         <Button
           type="button"
           variant="ghost"

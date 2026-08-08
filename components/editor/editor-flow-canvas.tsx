@@ -24,6 +24,7 @@ import {
   type CanvasTemplate,
 } from "@/components/editor/starter-templates"
 import { CanvasControlBar } from "@/components/editor/canvas-control-bar"
+import { CanvasEmptyHint } from "@/components/editor/canvas-empty-hint"
 import { CanvasPresenceAvatars } from "@/components/editor/canvas-presence-avatars"
 import { CanvasPresenceCursor } from "@/components/editor/canvas-presence-cursor"
 import { CanvasEdge } from "@/components/editor/canvas-edge"
@@ -251,6 +252,7 @@ function EditorFlowCanvasInner({
           />
           <Cursors components={cursorComponents} />
         </ReactFlow>
+        <CanvasEmptyHint visible={nodes.length === 0} />
         <CanvasPresenceAvatars />
         <CanvasControlBar
           onZoomIn={handleZoomIn}

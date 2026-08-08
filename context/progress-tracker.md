@@ -190,6 +190,9 @@ Update this file whenever the current phase, active feature, or implementation s
 - Node delete toolbar (#4)
   - `NodeDeleteButton` on selected-node toolbar; uses React Flow `deleteElements` → Liveblocks `onDelete`
   - Disabled while label editing
+- Delete/Backspace shortcuts (#5)
+  - `useKeyboardShortcuts` removes selected nodes/edges via `deleteElements`
+  - Ignored in editable fields; React Flow `deleteKeyCode` disabled to avoid double delete
 
 ## In Progress
 
@@ -197,7 +200,6 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Next Up
 
-- #5 Delete/Backspace shortcuts
 - #6 Empty canvas hint
 - #7 Change node shape after drop
 - #8 Specs tab empty state

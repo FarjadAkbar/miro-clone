@@ -187,6 +187,9 @@ Update this file whenever the current phase, active feature, or implementation s
   - `lib/design-agent-openai.ts`, `lib/spec-agent-openai.ts` — replaced `*-gemini` modules
   - `lib/canvas-flow-snapshot.ts` — Design chat reads Liveblocks flow before planning (reuse nodes + edges)
   - Removed `@ai-sdk/google`; ADR `docs/adr/0001-openai-for-ai-generation.md`; `CONTEXT.md` glossary
+- Node delete toolbar (#4)
+  - `NodeDeleteButton` on selected-node toolbar; uses React Flow `deleteElements` → Liveblocks `onDelete`
+  - Disabled while label editing
 
 ## In Progress
 
@@ -194,7 +197,6 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Next Up
 
-- #4 Node delete toolbar
 - #5 Delete/Backspace shortcuts
 - #6 Empty canvas hint
 - #7 Change node shape after drop

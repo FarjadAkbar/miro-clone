@@ -237,6 +237,7 @@ function EditorFlowCanvasInner({
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
           onDelete={onDelete}
+          deleteKeyCode={null}
           connectionMode={ConnectionMode.Loose}
           connectionLineType={ConnectionLineType.SmoothStep}
           fitView

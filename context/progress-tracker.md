@@ -190,11 +190,15 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## In Progress
 
-- None.
+- Stacked UX polish issues (#4–#8)
 
 ## Next Up
 
-- None yet.
+- #4 Node delete toolbar
+- #5 Delete/Backspace shortcuts
+- #6 Empty canvas hint
+- #7 Change node shape after drop
+- #8 Specs tab empty state
 
 ## Open Questions
 

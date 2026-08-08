@@ -187,6 +187,8 @@ Update this file whenever the current phase, active feature, or implementation s
   - `lib/design-agent-openai.ts`, `lib/spec-agent-openai.ts` — replaced `*-gemini` modules
   - `lib/canvas-flow-snapshot.ts` — Design chat reads Liveblocks flow before planning (reuse nodes + edges)
   - Removed `@ai-sdk/google`; ADR `docs/adr/0001-openai-for-ai-generation.md`; `CONTEXT.md` glossary
+- Fix AI presence cursor `resolveUsers` crash
+  - `canvas-presence-cursor.tsx` — stop using `useUser` (needs `resolveUsers`); read name/color/`thinking` from room `useOther` info instead (works for humans + `miro-ai`)
 
 ## In Progress
 
@@ -212,7 +214,7 @@ Update this file whenever the current phase, active feature, or implementation s
 - Collaborators stored by email in `ProjectCollaborator`; profile enrichment via Clerk Backend API only (no local user table).
 - Liveblocks uses access-token auth via `prepareSession` + per-request `session.allow(room)` after Prisma access checks; rooms created with `defaultAccesses: []`.
 - Canvas state synced via `useLiveblocksFlow` in Liveblocks Storage; node shapes rendered via shared `CanvasNodeShapeView`.
-- AI design agent runs as Trigger.dev task; canvas updates use server-side `mutateFlow`; Miro AI presence via `setPresence` (`ghost-ai` user ID).
+- AI design agent runs as Trigger.dev task; canvas updates use server-side `mutateFlow`; Miro AI presence via `setPresence` (`miro-ai` user ID).
 - Shared AI progress uses Liveblocks feed `ai-status-feed` (single latest message) plus presence `thinking` flag.
 - Room chat uses separate Liveblocks feed `ai-chat`; messages validated with Zod before render.
 - Spec generation runs as Trigger.dev `generate-spec` task; `projectId` derived server-side from authenticated `roomId` access.
@@ -221,6 +223,7 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Session Notes
 
+- Fixed AI presence cursor crash: `CanvasPresenceCursor` called `useUser("miro-ai")`, which requires `resolveUsers`, but none was configured. Switched to room `useOther(...).info` (same source as avatars) so human session `userInfo` and AI `setPresence` `userInfo` both work; removed debug `console.log`s.
 - Workspace navbar: board title absolutely centered in the full header width (`left-1/2 -translate-x-1/2`) so unequal left/right action groups no longer bias it; truncates with ellipsis via `max-w-[min(40vw,calc(100%-22rem))]`.
 - Fixed `/editor/[roomId]` 404: Next.js requires the same dynamic segment name app-wide (`roomId`); API routes renamed from `[projectId]`; clear `.next` after such changes.
 - Feature 23: moved `EditorAiSidebar` inside `RoomProvider` so feed/presence hooks work; aligned `@liveblocks/node@3.19.5` with `@liveblocks/react-flow` to fix duplicate `@liveblocks/core` type errors.

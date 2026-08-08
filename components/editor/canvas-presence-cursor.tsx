@@ -2,19 +2,16 @@
 
 import type { CursorsCursorProps } from "@liveblocks/react-flow"
 import { Loader2 } from "lucide-react"
-import { useOther, useUser } from "@liveblocks/react/suspense"
+import { useOther } from "@liveblocks/react/suspense"
 
-export function CanvasPresenceCursor({
-  userId,
-  connectionId,
-}: CursorsCursorProps) {
-  console.log("userId", userId)
-  console.log("connectionId", connectionId)
-  const { user } = useUser(userId)
-  console.log("user", user)
-  const thinking = useOther(connectionId, (other) => other.presence.thinking)
-  const color = user.color || "var(--color-brand)"
-  const name = user.name || "Guest"
+export function CanvasPresenceCursor({ connectionId }: CursorsCursorProps) {
+  const other = useOther(connectionId, (user) => ({
+    thinking: user.presence.thinking,
+    name: user.info.name,
+    color: user.info.color,
+  }))
+  const color = other.color || "var(--color-brand)"
+  const name = other.name || "Guest"
 
   return (
     <div className="pointer-events-none select-none" style={{ color }}>
@@ -33,7 +30,7 @@ export function CanvasPresenceCursor({
         className="ml-3 mt-0.5 flex w-max max-w-[160px] items-center gap-1 truncate rounded-md px-2 py-0.5 text-xs font-medium text-white shadow-sm"
         style={{ backgroundColor: color }}
       >
-        {thinking ? (
+        {other.thinking ? (
           <Loader2 className="h-3 w-3 shrink-0 animate-spin" aria-hidden />
         ) : null}
         <span className="truncate">{name}</span>

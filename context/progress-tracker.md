@@ -193,6 +193,8 @@ Update this file whenever the current phase, active feature, or implementation s
 - Delete/Backspace shortcuts (#5)
   - `useKeyboardShortcuts` removes selected nodes/edges via `deleteElements`
   - Ignored in editable fields; React Flow `deleteKeyCode` disabled to avoid double delete
+- Empty canvas hint (#6)
+  - `CanvasEmptyHint` when `nodes.length === 0`; pointer-events-none so pan/zoom/drop still work
 
 ## In Progress
 
@@ -200,7 +202,6 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Next Up
 
-- #6 Empty canvas hint
 - #7 Change node shape after drop
 - #8 Specs tab empty state
 

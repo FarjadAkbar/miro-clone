@@ -3,8 +3,9 @@ import { cn } from "@/lib/utils"
 
 const handleClassName = cn(
   "canvas-node-handle",
-  "!h-2.5 !w-2.5 !rounded-full !border-2 !border-border-default !bg-white",
-  "opacity-0 transition-opacity duration-150 group-hover/node:opacity-100"
+  "!h-3.5 !w-3.5 !rounded-full !border-2 !border-border-default !bg-white",
+  "opacity-40 transition-opacity duration-150",
+  "group-hover/node:opacity-100 hover:!opacity-100 hover:!border-accent-ai hover:!bg-accent-ai"
 )
 
 const handlePositions = [
@@ -24,6 +25,7 @@ export function CanvasNodeHandles() {
           type="source"
           position={position}
           className={handleClassName}
+          isConnectable
         />
       ))}
       {handlePositions.map(({ position, id }) => (
@@ -33,6 +35,7 @@ export function CanvasNodeHandles() {
           type="target"
           position={position}
           className={handleClassName}
+          isConnectable
         />
       ))}
     </>

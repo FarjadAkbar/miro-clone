@@ -52,6 +52,50 @@ export function flowMotionTiming(sequence: number | undefined): {
   }
 }
 
+/** Highest hop number in a resolved sequence map. */
+export function getMaxTravelSequence(
+  sequences: ReadonlyMap<string, number>
+): number {
+  let max = 0
+  for (const value of sequences.values()) {
+    if (value > max) {
+      max = value
+    }
+  }
+  return max
+}
+
+/** Only the current hop should show a traveler — not every edge at once. */
+export function isEdgeActiveForHop(
+  sequence: number | undefined,
+  activeHop: number | null
+): boolean {
+  if (activeHop == null || sequence == null) {
+    return false
+  }
+  return sequence === activeHop
+}
+
+/**
+ * Advance the playhead after one hop finishes.
+ * Returns null when brief play should settle; loops to 1 in Present mode.
+ */
+export function nextActiveHop(
+  currentHop: number,
+  maxHop: number,
+  loop: boolean
+): number | null {
+  if (maxHop < 1) {
+    return null
+  }
+
+  if (currentHop < maxHop) {
+    return currentHop + 1
+  }
+
+  return loop ? 1 : null
+}
+
 export interface FlowEdgeInput {
   id: string
   source: string

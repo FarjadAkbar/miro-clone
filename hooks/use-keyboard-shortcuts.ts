@@ -40,6 +40,28 @@ export function useKeyboardShortcuts({
 
       const modifier = event.metaKey || event.ctrlKey
 
+      if (event.key === "Delete" || event.key === "Backspace") {
+        const selectedNodes = reactFlow
+          .getNodes()
+          .filter((node) => node.selected)
+          .map((node) => ({ id: node.id }))
+        const selectedEdges = reactFlow
+          .getEdges()
+          .filter((edge) => edge.selected)
+          .map((edge) => ({ id: edge.id }))
+
+        if (selectedNodes.length === 0 && selectedEdges.length === 0) {
+          return
+        }
+
+        event.preventDefault()
+        void reactFlow.deleteElements({
+          nodes: selectedNodes,
+          edges: selectedEdges,
+        })
+        return
+      }
+
       if ((event.key === "+" || event.key === "=") && !modifier) {
         event.preventDefault()
         void reactFlow.zoomIn({ duration: CANVAS_ZOOM_DURATION_MS })

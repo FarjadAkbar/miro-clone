@@ -15,7 +15,10 @@ import {
   EDGE_COLOR_REST,
   EDGE_INTERACTION_WIDTH,
 } from "@/lib/canvas-edge-constants"
-import { flowMotionTiming } from "@/lib/flow-animation"
+import {
+  FLOW_EDGE_DURATION_MS,
+  isEdgeActiveForHop,
+} from "@/lib/flow-animation"
 import { DEFAULT_EDGE_COLOR, type CanvasEdge } from "@/types/canvas"
 
 export function CanvasEdge({
@@ -31,7 +34,7 @@ export function CanvasEdge({
   markerEnd,
 }: EdgeProps<CanvasEdge>) {
   const { updateEdgeLabel } = useCanvasFlow()
-  const { isFlowPlaying, sequenceByEdgeId } = useFlowPlay()
+  const { isFlowPlaying, activeHop, sequenceByEdgeId } = useFlowPlay()
   const [hovered, setHovered] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
   const [draftLabel, setDraftLabel] = useState("")
@@ -49,9 +52,13 @@ export function CanvasEdge({
 
   const label = data?.label ?? ""
   const isActive = selected || hovered || isEditing
-  const strokeColor = isActive ? DEFAULT_EDGE_COLOR : EDGE_COLOR_REST
   const sequence = sequenceByEdgeId.get(id) ?? data?.sequence
-  const motionTiming = flowMotionTiming(sequence)
+  const hopActive = isEdgeActiveForHop(sequence, activeHop)
+  const strokeColor = hopActive
+    ? "var(--color-accent-ai)"
+    : isActive
+      ? DEFAULT_EDGE_COLOR
+      : EDGE_COLOR_REST
 
   const startEditing = useCallback(() => {
     setDraftLabel(label)
@@ -77,17 +84,20 @@ export function CanvasEdge({
           markerEnd={markerEnd}
           style={{
             stroke: strokeColor,
-            strokeWidth: 1.5,
+            strokeWidth: hopActive ? 2.25 : 1.5,
             strokeLinecap: "round",
             strokeLinejoin: "round",
+            transition: "stroke 120ms ease, stroke-width 120ms ease",
           }}
         />
-        {isFlowPlaying ? (
-          <circle r={3.5} className="pointer-events-none fill-accent-ai">
+        {hopActive ? (
+          <circle r={4} className="pointer-events-none fill-accent-ai">
             <animateMotion
-              dur={`${motionTiming.durationSec}s`}
-              begin={`${motionTiming.delaySec}s`}
-              repeatCount="indefinite"
+              key={`hop-${activeHop}-${id}`}
+              dur={`${FLOW_EDGE_DURATION_MS / 1000}s`}
+              begin="0s"
+              repeatCount="1"
+              fill="freeze"
               path={edgePath}
               rotate="auto"
             />
@@ -108,7 +118,11 @@ export function CanvasEdge({
           <div className="flex flex-col items-center gap-1">
             {isFlowPlaying && sequence ? (
               <span
-                className="rounded-xl bg-accent-ai/20 px-1.5 py-0.5 text-[10px] font-medium tabular-nums text-accent-ai-text"
+                className={
+                  hopActive
+                    ? "rounded-xl bg-accent-ai px-1.5 py-0.5 text-[10px] font-medium tabular-nums text-white"
+                    : "rounded-xl bg-accent-ai/20 px-1.5 py-0.5 text-[10px] font-medium tabular-nums text-accent-ai-text"
+                }
                 aria-label={`Travel sequence ${sequence}`}
               >
                 {sequence}

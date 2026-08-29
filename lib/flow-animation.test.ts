@@ -1,8 +1,13 @@
 import { describe, expect, it } from "vitest"
 import {
   FLOW_BRIEF_PLAY_MS,
+  FLOW_EDGE_DURATION_MS,
   FLOW_HOP_STAGGER_MS,
   flowHopDelayMs,
+  flowMotionTiming,
+  getMaxTravelSequence,
+  isEdgeActiveForHop,
+  nextActiveHop,
   resolveTravelSequences,
   shouldPlayFlowAnimation,
   shouldStartBriefFlowPlay,
@@ -46,6 +51,32 @@ describe("shouldStartBriefFlowPlay", () => {
   })
 })
 
+describe("shouldStartBriefFlowPlayFromStatus", () => {
+  it("starts when Design complete is newly reported", () => {
+    expect(
+      shouldStartBriefFlowPlayFromStatus({
+        previousStatus: "Applying 4 canvas updates…",
+        currentStatus: "Design complete.",
+      })
+    ).toBe(true)
+  })
+
+  it("ignores interview statuses and unchanged text", () => {
+    expect(
+      shouldStartBriefFlowPlayFromStatus({
+        previousStatus: "Starting Design chat…",
+        currentStatus: "Design interview in progress.",
+      })
+    ).toBe(false)
+    expect(
+      shouldStartBriefFlowPlayFromStatus({
+        previousStatus: "Design complete.",
+        currentStatus: "Design complete.",
+      })
+    ).toBe(false)
+  })
+})
+
 describe("resolveTravelSequences", () => {
   it("keeps explicit sequence values on edges", () => {
     const sequences = resolveTravelSequences([
@@ -80,29 +111,30 @@ describe("resolveTravelSequences", () => {
   })
 })
 
-describe("shouldStartBriefFlowPlayFromStatus", () => {
-  it("starts when Design complete is newly reported", () => {
-    expect(
-      shouldStartBriefFlowPlayFromStatus({
-        previousStatus: "Applying 4 canvas updates…",
-        currentStatus: "Design complete.",
-      })
-    ).toBe(true)
+describe("sequential hop playhead", () => {
+  it("only activates edges for the current hop", () => {
+    expect(isEdgeActiveForHop(1, 1)).toBe(true)
+    expect(isEdgeActiveForHop(2, 1)).toBe(false)
+    expect(isEdgeActiveForHop(1, null)).toBe(false)
   })
 
-  it("ignores interview statuses and unchanged text", () => {
+  it("advances hop by hop and loops or settles", () => {
+    expect(nextActiveHop(1, 3, false)).toBe(2)
+    expect(nextActiveHop(3, 3, false)).toBe(null)
+    expect(nextActiveHop(3, 3, true)).toBe(1)
+  })
+
+  it("reads max hop from resolved sequences", () => {
     expect(
-      shouldStartBriefFlowPlayFromStatus({
-        previousStatus: "Starting Design chat…",
-        currentStatus: "Design interview in progress.",
-      })
-    ).toBe(false)
-    expect(
-      shouldStartBriefFlowPlayFromStatus({
-        previousStatus: "Design complete.",
-        currentStatus: "Design complete.",
-      })
-    ).toBe(false)
+      getMaxTravelSequence(
+        new Map([
+          ["a", 1],
+          ["b", 4],
+          ["c", 2],
+        ])
+      )
+    ).toBe(4)
+    expect(getMaxTravelSequence(new Map())).toBe(0)
   })
 })
 
@@ -118,5 +150,6 @@ describe("flow brief play duration", () => {
   it("is long enough to show a short travel story", () => {
     expect(FLOW_BRIEF_PLAY_MS).toBeGreaterThanOrEqual(3000)
     expect(FLOW_BRIEF_PLAY_MS).toBeLessThanOrEqual(8000)
+    expect(flowMotionTiming(2).durationSec).toBe(FLOW_EDGE_DURATION_MS / 1000)
   })
 })

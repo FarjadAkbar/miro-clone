@@ -19,6 +19,7 @@ describe("Design plan component kinds", () => {
           target: null,
           componentKind: "database",
           parentId: null,
+          sequence: null,
         },
       ],
     })
@@ -51,6 +52,7 @@ describe("Design plan component kinds", () => {
           target: null,
           componentKind: "cache",
           parentId: null,
+          sequence: null,
         },
       ],
     })

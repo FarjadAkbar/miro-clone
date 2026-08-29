@@ -47,6 +47,8 @@ export interface CanvasGroupData extends Record<string, unknown> {
 
 export interface CanvasEdgeData extends Record<string, unknown> {
   label: string
+  /** Travel hop order for Flow animation (1-based). */
+  sequence?: number
 }
 
 export type CanvasNode = Node<CanvasNodeData, typeof CANVAS_NODE_TYPE>

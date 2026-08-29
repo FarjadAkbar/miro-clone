@@ -73,7 +73,11 @@ export function formatCanvasFlowSnapshot(snapshot: CanvasFlowSnapshot): string {
       : snapshot.edges
           .map((edge) => {
             const label = edge.data?.label ? ` label="${edge.data.label}"` : ""
-            return `- id="${edge.id}" ${edge.source} -> ${edge.target}${label}`
+            const sequence =
+              typeof edge.data?.sequence === "number"
+                ? ` sequence=${edge.data.sequence}`
+                : ""
+            return `- id="${edge.id}" ${edge.source} -> ${edge.target}${label}${sequence}`
           })
           .join("\n")
 

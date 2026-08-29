@@ -38,6 +38,7 @@ import {
   ApplyEnterProvider,
   applyEnterDurationStyle,
 } from "@/hooks/use-apply-enter"
+import { FlowPlayProvider, useFlowPlay } from "@/hooks/use-flow-play"
 import {
   useCanvasAutosave,
   type CanvasSaveStatus,
@@ -260,58 +261,101 @@ function EditorFlowCanvasInner({
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
     >
-      <ApplyEnterProvider active={isAiApplyActive}>
-        <div
-          className="relative h-[90vh] w-full"
-          onDragOver={handleDragOver}
-          onDrop={handleDrop}
-        >
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            nodeTypes={nodeTypes}
-            edgeTypes={edgeTypes}
-            defaultEdgeOptions={defaultEdgeOptions}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onConnect={onConnect}
-            onDelete={onDelete}
-            connectionMode={ConnectionMode.Loose}
-            connectionLineType={ConnectionLineType.SmoothStep}
-            fitView
-            className={cn(
-              "bg-bg-base",
-              isAiApplyActive && "canvas-apply-animating"
-            )}
-            style={applyEnterDurationStyle()}
+      <FlowPlayProvider
+        edges={edges.map((edge) => ({
+          id: edge.id,
+          source: edge.source,
+          target: edge.target,
+          sequence: edge.data?.sequence,
+        }))}
+      >
+        <ApplyEnterProvider active={isAiApplyActive}>
+          <div
+            className="relative h-[90vh] w-full"
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
           >
-            <Background
-              variant={BackgroundVariant.Dots}
-              gap={20}
-              size={1}
-              color="var(--color-border-subtle)"
+            <ReactFlow
+              nodes={nodes}
+              edges={edges}
+              nodeTypes={nodeTypes}
+              edgeTypes={edgeTypes}
+              defaultEdgeOptions={defaultEdgeOptions}
+              onNodesChange={onNodesChange}
+              onEdgesChange={onEdgesChange}
+              onConnect={onConnect}
+              onDelete={onDelete}
+              connectionMode={ConnectionMode.Loose}
+              connectionLineType={ConnectionLineType.SmoothStep}
+              fitView
+              className={cn(
+                "bg-bg-base",
+                isAiApplyActive && "canvas-apply-animating"
+              )}
+              style={applyEnterDurationStyle()}
+            >
+              <Background
+                variant={BackgroundVariant.Dots}
+                gap={20}
+                size={1}
+                color="var(--color-border-subtle)"
+              />
+              <Cursors components={cursorComponents} />
+            </ReactFlow>
+            <CanvasPresenceAvatars />
+            <CanvasControlsWithPresent
+              onZoomIn={handleZoomIn}
+              onZoomOut={handleZoomOut}
+              onFitView={handleFitView}
+              onUndo={undo}
+              onRedo={redo}
+              canUndo={canUndo}
+              canRedo={canRedo}
             />
-            <Cursors components={cursorComponents} />
-          </ReactFlow>
-          <CanvasPresenceAvatars />
-          <CanvasControlBar
-            onZoomIn={handleZoomIn}
-            onZoomOut={handleZoomOut}
-            onFitView={handleFitView}
-            onUndo={undo}
-            onRedo={redo}
-            canUndo={canUndo}
-            canRedo={canRedo}
-          />
-          <ShapePanel />
-          <StarterTemplatesModal
-            open={templatesOpen}
-            onOpenChange={onTemplatesOpenChange}
-            onImport={handleImportTemplate}
-          />
-        </div>
-      </ApplyEnterProvider>
+            <ShapePanel />
+            <StarterTemplatesModal
+              open={templatesOpen}
+              onOpenChange={onTemplatesOpenChange}
+              onImport={handleImportTemplate}
+            />
+          </div>
+        </ApplyEnterProvider>
+      </FlowPlayProvider>
     </CanvasFlowProvider>
+  )
+}
+
+function CanvasControlsWithPresent({
+  onZoomIn,
+  onZoomOut,
+  onFitView,
+  onUndo,
+  onRedo,
+  canUndo,
+  canRedo,
+}: {
+  onZoomIn: () => void
+  onZoomOut: () => void
+  onFitView: () => void
+  onUndo: () => void
+  onRedo: () => void
+  canUndo: boolean
+  canRedo: boolean
+}) {
+  const { presentMode, togglePresentMode } = useFlowPlay()
+
+  return (
+    <CanvasControlBar
+      onZoomIn={onZoomIn}
+      onZoomOut={onZoomOut}
+      onFitView={onFitView}
+      onUndo={onUndo}
+      onRedo={onRedo}
+      canUndo={canUndo}
+      canRedo={canRedo}
+      presentMode={presentMode}
+      onPresentModeToggle={togglePresentMode}
+    />
   )
 }
 

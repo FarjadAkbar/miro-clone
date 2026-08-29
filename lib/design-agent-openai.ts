@@ -43,6 +43,7 @@ Existing canvas (critical):
 - New node/group ids: kebab-case, unique, not colliding with existing ids.
 - Only include actions needed for the user request; do not rebuild the whole diagram unless asked.
 - After adding new nodes that should connect, always include the corresponding add_edge actions.
+- For add_edge, set sequence to the travel hop order (1 = first hop in the request path, then 2, 3, …). Parallel independent edges may share a hop or use consecutive numbers.
 - For each action, set only the fields that apply to that type; set unused fields to null (not omitted).
 - add_group requires: id, label, x, y (width/height optional)
 - update_group requires: id, plus label/x/y/width/height to change
@@ -52,7 +53,7 @@ Existing canvas (critical):
 - resize_node requires: id, width, height (others null)
 - update_node requires: id, plus label/shape/colorIndex/componentKind/parentId to change (unused null)
 - delete_node / delete_edge require: id (others null)
-- add_edge requires: id, source, target (others null)`
+- add_edge requires: id, source, target; set sequence (1-based hop order) when showing travel order along the path; label optional (others null)`
 
 export async function generateDesignPlan(
   prompt: string,

@@ -19,6 +19,7 @@ describe("Design plan groups", () => {
           target: null,
           componentKind: null,
           parentId: null,
+          sequence: null,
         },
       ],
     })
@@ -51,6 +52,7 @@ describe("Design plan groups", () => {
           target: null,
           componentKind: "database",
           parentId: "tier-db",
+          sequence: null,
         },
       ],
     })
@@ -81,6 +83,7 @@ describe("Design plan groups", () => {
           target: null,
           componentKind: null,
           parentId: null,
+          sequence: null,
         },
       ],
     })

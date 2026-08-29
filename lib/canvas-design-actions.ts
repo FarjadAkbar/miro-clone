@@ -73,7 +73,10 @@ function buildEdge(
     type: CANVAS_EDGE_TYPE,
     source: action.source,
     target: action.target,
-    data: { label: action.label ?? "" },
+    data: {
+      label: action.label ?? "",
+      ...(action.sequence !== undefined ? { sequence: action.sequence } : {}),
+    },
     markerEnd: {
       type: MarkerType.ArrowClosed,
       color: DEFAULT_EDGE_COLOR,

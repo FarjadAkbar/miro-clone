@@ -70,6 +70,7 @@ export const designAgentActionSchema = z.discriminatedUnion("type", [
     source: z.string().min(1),
     target: z.string().min(1),
     label: z.string().optional(),
+    sequence: z.number().int().positive().optional(),
   }),
   z.object({
     type: z.literal("delete_edge"),
@@ -122,6 +123,7 @@ export const designAgentActionLlmSchema = z.object({
   target: z.string().nullable(),
   componentKind: componentKindSchema.nullable(),
   parentId: z.string().nullable(),
+  sequence: z.number().int().positive().nullable(),
 })
 
 export const designAgentPlanLlmSchema = z.object({
@@ -235,6 +237,10 @@ export function narrowDesignAgentAction(
         source: requireString(action.source, "source"),
         target: requireString(action.target, "target"),
         label: action.label ?? undefined,
+        sequence:
+          typeof action.sequence === "number" && action.sequence >= 1
+            ? Math.floor(action.sequence)
+            : undefined,
       })
     case "delete_edge":
       return designAgentActionSchema.parse({

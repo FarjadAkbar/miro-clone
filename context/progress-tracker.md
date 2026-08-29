@@ -192,11 +192,15 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## In Progress
 
-- Stacked UX polish issues (#4–#8)
+- Architecture canvas v2 — Design agent turn prefactor done; next: component kinds / groups
 
 ## Next Up
 
-- #4 Node delete toolbar
+- Architecture canvas v2: Component kinds
+- Architecture canvas v2: Groups
+- Architecture canvas v2: Hybrid Design interview + Generate on canvas
+- Architecture canvas v2: Wire Spec generation
+- Architecture canvas v2: Apply + Flow animation + Present mode
 - #5 Delete/Backspace shortcuts
 - #6 Empty canvas hint
 - #7 Change node shape after drop
@@ -220,9 +224,11 @@ Update this file whenever the current phase, active feature, or implementation s
 - Spec generation runs as Trigger.dev `generate-spec` task; `projectId` derived server-side from authenticated `roomId` access.
 - Spec content stored in Vercel Blob; `ProjectSpec` holds metadata + `filePath`; download served through access-checked API route.
 - Design chat and Spec generation use OpenAI (`gpt-4o` default); Design chat plans against a Liveblocks canvas snapshot so existing nodes are reused.
+- Design chat planning goes through `runDesignAgentTurn` (snapshot + message → turn result); OpenAI `generateDesignPlan` is injected as the plan dependency so the turn seam stays testable without Liveblocks/UI.
 
 ## Session Notes
 
+- Prefactor Design agent turn: added `lib/design-agent-turn.ts` + Vitest; Trigger `design-agent` calls `runDesignAgentTurn` then applies plan; behavior still always-plan.
 - Fixed AI presence cursor crash: `CanvasPresenceCursor` called `useUser("miro-ai")`, which requires `resolveUsers`, but none was configured. Switched to room `useOther(...).info` (same source as avatars) so human session `userInfo` and AI `setPresence` `userInfo` both work; removed debug `console.log`s.
 - Workspace navbar: board title absolutely centered in the full header width (`left-1/2 -translate-x-1/2`) so unequal left/right action groups no longer bias it; truncates with ellipsis via `max-w-[min(40vw,calc(100%-22rem))]`.
 - Fixed `/editor/[roomId]` 404: Next.js requires the same dynamic segment name app-wide (`roomId`); API routes renamed from `[projectId]`; clear `.next` after such changes.

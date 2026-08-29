@@ -2,6 +2,7 @@ import { logger, task } from "@trigger.dev/sdk"
 import { applyDesignActions } from "@/lib/canvas-design-actions"
 import { getCanvasFlowSnapshot } from "@/lib/canvas-flow-snapshot"
 import { generateDesignPlan } from "@/lib/design-agent-openai"
+import { runDesignAgentTurn } from "@/lib/design-agent-turn"
 import {
   clearAiAgentPresence,
   publishAiStatus,
@@ -30,7 +31,11 @@ export const designAgentTask = task({
       const canvas = await getCanvasFlowSnapshot(roomId)
 
       await publishAiStatus(roomId, "Interpreting your prompt…")
-      const plan = await generateDesignPlan(prompt, canvas)
+      const turn = await runDesignAgentTurn(
+        { message: prompt, canvas },
+        { generatePlan: generateDesignPlan }
+      )
+      const { plan } = turn
 
       logger.info("Design plan generated", {
         roomId,

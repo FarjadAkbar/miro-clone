@@ -48,6 +48,11 @@ export const specTriggerBodySchema = z.object({
 
 export type SpecTriggerBody = z.infer<typeof specTriggerBodySchema>
 
+export interface SpecAgentTaskOutput {
+  markdown?: string
+  specId?: string
+}
+
 export const specTokenBodySchema = z.object({
   runId: z.string().min(1),
 })

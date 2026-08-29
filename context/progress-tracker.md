@@ -192,11 +192,10 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## In Progress
 
-- Architecture canvas v2 — hybrid Design interview done; next: Wire Spec generation
+- Architecture canvas v2 — Spec generation wired; next: Apply + Flow animation + Present mode
 
 ## Next Up
 
-- Architecture canvas v2: Wire Spec generation
 - Architecture canvas v2: Apply + Flow animation + Present mode
 - #5 Delete/Backspace shortcuts
 - #6 Empty canvas hint
@@ -228,6 +227,7 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Session Notes
 
+- Wire Spec generation: Specs tab Generate Spec posts canvas+chat via `buildSpecTriggerBody` → `/api/ai/spec` + token; `useSpecAgentRun` tracks Trigger run; list refresh on complete; Groups omitted from Spec payload.
 - Hybrid Design interview: turn outcomes interview|plan; Generate on canvas button; history + intent in design API/Trigger.
 - Groups: named frames with containment; Groups tab; Design plan group actions; drop-to-nest.
 - Component kinds: shape panel Components|Shapes; kind icons; drag/drop + Design plan persist `componentKind`; OpenAI prompt updated.

@@ -1,13 +1,21 @@
 "use client"
 
+import { useLiveblocksFlow } from "@liveblocks/react-flow"
 import { Download, FileText, Loader2 } from "lucide-react"
 import { useCallback, useState } from "react"
 import { SpecPreviewModal } from "@/components/editor/spec-preview-modal"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { useAiChatFeed } from "@/hooks/use-ai-chat-feed"
 import { useProjectSpecs } from "@/hooks/use-project-specs"
+import { useSpecAgentRun } from "@/hooks/use-spec-agent-run"
+import { buildSpecTriggerBody } from "@/lib/build-spec-trigger-body"
 import { formatSpecDate } from "@/lib/format-spec-date"
 import { downloadProjectSpec } from "@/lib/project-spec-client"
+import type {
+  CanvasEdge as CanvasEdgeType,
+  CanvasFlowNode,
+} from "@/types/canvas"
 import type { ProjectSpecListItem } from "@/types/project-spec"
 
 interface AiSpecsTabProps {
@@ -15,12 +23,34 @@ interface AiSpecsTabProps {
 }
 
 export function AiSpecsTab({ roomId }: AiSpecsTabProps) {
-  const { specs, isLoading, error } = useProjectSpecs(roomId)
+  const { specs, isLoading, error, refresh } = useProjectSpecs(roomId)
+  const { chatMessages } = useAiChatFeed()
+  const { nodes, edges } = useLiveblocksFlow<CanvasFlowNode, CanvasEdgeType>({
+    suspense: true,
+    nodes: { initial: [] },
+    edges: { initial: [] },
+  })
+
   const [selectedSpec, setSelectedSpec] = useState<ProjectSpecListItem | null>(
     null
   )
   const [previewOpen, setPreviewOpen] = useState(false)
   const [downloadingId, setDownloadingId] = useState<string | null>(null)
+  const [generateError, setGenerateError] = useState<string | null>(null)
+
+  const onRunComplete = useCallback(async () => {
+    setGenerateError(null)
+    await refresh()
+  }, [refresh])
+
+  const onRunFailed = useCallback(async (message: string) => {
+    setGenerateError(message)
+  }, [])
+
+  const { startRun, isRunActive } = useSpecAgentRun({
+    onRunComplete,
+    onRunFailed,
+  })
 
   const openPreview = useCallback((spec: ProjectSpecListItem) => {
     setSelectedSpec(spec)
@@ -39,15 +69,47 @@ export function AiSpecsTab({ roomId }: AiSpecsTabProps) {
     [roomId]
   )
 
+  const handleGenerate = useCallback(async () => {
+    if (isRunActive) {
+      return
+    }
+
+    setGenerateError(null)
+
+    const body = buildSpecTriggerBody({
+      roomId,
+      nodes,
+      edges,
+      chatHistory: chatMessages.map((item) => item.message),
+    })
+
+    await startRun(body)
+  }, [chatMessages, edges, isRunActive, nodes, roomId, startRun])
+
   return (
     <>
       <div className="flex min-h-0 flex-1 flex-col gap-4 px-4 py-4">
         <Button
           type="button"
-          className="w-full shrink-0 bg-accent-ai text-white hover:bg-accent-ai/90"
+          className="w-full shrink-0 bg-accent-ai text-white hover:bg-accent-ai/90 disabled:opacity-60"
+          onClick={() => {
+            void handleGenerate()
+          }}
+          disabled={isRunActive}
         >
-          Generate Spec
+          {isRunActive ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Generating…
+            </>
+          ) : (
+            "Generate Spec"
+          )}
         </Button>
+
+        {generateError ? (
+          <p className="text-xs text-state-error">{generateError}</p>
+        ) : null}
 
         {isLoading ? (
           <div className="flex flex-1 items-center justify-center py-8">

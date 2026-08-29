@@ -10,7 +10,13 @@ import {
   type CanvasTemplate,
 } from "@/components/editor/starter-templates"
 import { Button } from "@/components/ui/button"
-import type { CanvasEdge, CanvasNode, CanvasNodeShape } from "@/types/canvas"
+import type {
+  CanvasEdge,
+  CanvasFlowNode,
+  CanvasNode,
+  CanvasNodeShape,
+} from "@/types/canvas"
+import { CANVAS_NODE_TYPE } from "@/types/canvas"
 
 const PREVIEW_WIDTH = 280
 const PREVIEW_HEIGHT = 156
@@ -124,7 +130,7 @@ function TemplateDiagramPreview({
   nodes,
   edges,
 }: {
-  nodes: CanvasNode[]
+  nodes: CanvasFlowNode[]
   edges: CanvasEdge[]
 }) {
   const bounds = getTemplateBounds(nodes)
@@ -173,16 +179,21 @@ function TemplateDiagramPreview({
       })}
 
       {nodes.map((node) => {
-        const { width, height } = getNodeDimensions(node)
+        if (node.type !== CANVAS_NODE_TYPE) {
+          return null
+        }
+
+        const canvasNode = node as CanvasNode
+        const { width, height } = getNodeDimensions(canvasNode)
         return (
           <PreviewNodeShape
-            key={node.id}
-            shape={node.data.shape}
-            x={node.position.x * scale + offsetX}
-            y={node.position.y * scale + offsetY}
+            key={canvasNode.id}
+            shape={canvasNode.data.shape}
+            x={canvasNode.position.x * scale + offsetX}
+            y={canvasNode.position.y * scale + offsetY}
             width={width * scale}
             height={height * scale}
-            fill={node.data.color}
+            fill={canvasNode.data.color}
           />
         )
       })}

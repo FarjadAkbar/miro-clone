@@ -192,11 +192,10 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## In Progress
 
-- Architecture canvas v2 — component kinds done; next: Groups
+- Architecture canvas v2 — Groups done; next: Hybrid Design interview
 
 ## Next Up
 
-- Architecture canvas v2: Groups
 - Architecture canvas v2: Hybrid Design interview + Generate on canvas
 - Architecture canvas v2: Wire Spec generation
 - Architecture canvas v2: Apply + Flow animation + Present mode
@@ -225,9 +224,11 @@ Update this file whenever the current phase, active feature, or implementation s
 - Design chat and Spec generation use OpenAI (`gpt-4o` default); Design chat plans against a Liveblocks canvas snapshot so existing nodes are reused.
 - Design chat planning goes through `runDesignAgentTurn` (snapshot + message → turn result); OpenAI `generateDesignPlan` is injected as the plan dependency so the turn seam stays testable without Liveblocks/UI.
 - Nodes may carry optional `componentKind` (v1 catalog in `types/component-kind.ts`); geometric `shape` remains required for rendering; Design plans prefer kinds and fill shape/color/size from the catalog when omitted.
+- Groups are `canvasGroup` flow nodes with real React Flow containment (`parentId` + `extent: "parent"`); Design plans use `add_group` / `update_group` / `delete_group` and `parentId` on nodes; absolute coords convert to Group-relative on apply/drop.
 
 ## Session Notes
 
+- Groups: named frames with containment; Groups tab; Design plan group actions; drop-to-nest.
 - Component kinds: shape panel Components|Shapes; kind icons; drag/drop + Design plan persist `componentKind`; OpenAI prompt updated.
 - Prefactor Design agent turn: added `lib/design-agent-turn.ts` + Vitest; Trigger `design-agent` calls `runDesignAgentTurn` then applies plan; behavior still always-plan.
 - Fixed AI presence cursor crash: `CanvasPresenceCursor` called `useUser("miro-ai")`, which requires `resolveUsers`, but none was configured. Switched to room `useOther(...).info` (same source as avatars) so human session `userInfo` and AI `setPresence` `userInfo` both work; removed debug `console.log`s.

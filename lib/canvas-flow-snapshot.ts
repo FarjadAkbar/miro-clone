@@ -1,9 +1,10 @@
 import { mutateFlow } from "@liveblocks/react-flow/node"
 import { getLiveblocks } from "@/lib/liveblocks"
-import type { CanvasEdge, CanvasNode } from "@/types/canvas"
+import { isCanvasGroup } from "@/lib/canvas-group"
+import type { CanvasEdge, CanvasFlowNode } from "@/types/canvas"
 
 export interface CanvasFlowSnapshot {
-  nodes: CanvasNode[]
+  nodes: CanvasFlowNode[]
   edges: CanvasEdge[]
 }
 
@@ -13,7 +14,7 @@ export async function getCanvasFlowSnapshot(
 ): Promise<CanvasFlowSnapshot> {
   let snapshot: CanvasFlowSnapshot = { nodes: [], edges: [] }
 
-  await mutateFlow<CanvasNode, CanvasEdge>(
+  await mutateFlow<CanvasFlowNode, CanvasEdge>(
     { client: getLiveblocks(), roomId },
     (flow) => {
       const json = flow.toJSON()
@@ -28,17 +29,41 @@ export async function getCanvasFlowSnapshot(
 }
 
 export function formatCanvasFlowSnapshot(snapshot: CanvasFlowSnapshot): string {
-  const nodes =
-    snapshot.nodes.length === 0
+  const groups = snapshot.nodes.filter(isCanvasGroup)
+  const nodes = snapshot.nodes.filter((node) => !isCanvasGroup(node))
+
+  const groupLines =
+    groups.length === 0
       ? "None"
-      : snapshot.nodes
+      : groups
+          .map((group) => {
+            const width = group.width ?? "?"
+            const height = group.height ?? "?"
+            return `- id="${group.id}" label="${group.data.label}" at (${group.position.x}, ${group.position.y}) size=${width}x${height}`
+          })
+          .join("\n")
+
+  const nodeLines =
+    nodes.length === 0
+      ? "None"
+      : nodes
           .map((node) => {
             const width = node.width ?? "?"
             const height = node.height ?? "?"
             const kind = node.data.componentKind
               ? ` kind=${node.data.componentKind}`
               : ""
-            return `- id="${node.id}" label="${node.data.label}" shape=${node.data.shape}${kind} at (${node.position.x}, ${node.position.y}) size=${width}x${height}`
+            const parent = node.parentId ? ` parent=${node.parentId}` : ""
+            const parentGroup = node.parentId
+              ? groups.find((group) => group.id === node.parentId)
+              : null
+            const absX = parentGroup
+              ? parentGroup.position.x + node.position.x
+              : node.position.x
+            const absY = parentGroup
+              ? parentGroup.position.y + node.position.y
+              : node.position.y
+            return `- id="${node.id}" label="${node.data.label}" shape=${node.data.shape}${kind}${parent} at (${absX}, ${absY}) size=${width}x${height}`
           })
           .join("\n")
 
@@ -52,5 +77,5 @@ export function formatCanvasFlowSnapshot(snapshot: CanvasFlowSnapshot): string {
           })
           .join("\n")
 
-  return `Existing nodes:\n${nodes}\n\nExisting edges:\n${edges}`
+  return `Existing groups:\n${groupLines}\n\nExisting nodes:\n${nodeLines}\n\nExisting edges:\n${edges}`
 }

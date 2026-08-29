@@ -2,6 +2,7 @@ import type { Edge, Node } from "@xyflow/react"
 import type { ComponentKind } from "@/types/component-kind"
 
 export const CANVAS_NODE_TYPE = "canvasNode" as const
+export const CANVAS_GROUP_TYPE = "canvasGroup" as const
 export const CANVAS_EDGE_TYPE = "canvasEdge" as const
 
 export const NODE_SHAPES = [
@@ -30,6 +31,8 @@ export const DEFAULT_NODE_COLOR = NODE_COLORS[0]
 
 export const DEFAULT_EDGE_COLOR = "#f8fafc"
 
+export const DEFAULT_GROUP_SIZE = { width: 420, height: 280 } as const
+
 export interface CanvasNodeData extends Record<string, unknown> {
   label: string
   color: string
@@ -38,20 +41,32 @@ export interface CanvasNodeData extends Record<string, unknown> {
   componentKind?: ComponentKind
 }
 
+export interface CanvasGroupData extends Record<string, unknown> {
+  label: string
+}
+
 export interface CanvasEdgeData extends Record<string, unknown> {
   label: string
 }
 
 export type CanvasNode = Node<CanvasNodeData, typeof CANVAS_NODE_TYPE>
+export type CanvasGroup = Node<CanvasGroupData, typeof CANVAS_GROUP_TYPE>
+export type CanvasFlowNode = CanvasNode | CanvasGroup
 export type CanvasEdge = Edge<CanvasEdgeData, typeof CANVAS_EDGE_TYPE>
 
 export const CANVAS_SHAPE_DRAG_TYPE = "application/canvas-shape"
+export const CANVAS_GROUP_DRAG_TYPE = "application/canvas-group"
 
 export interface CanvasShapeDragPayload {
   shape: CanvasNodeShape
   width: number
   height: number
   componentKind?: ComponentKind
+}
+
+export interface CanvasGroupDragPayload {
+  width: number
+  height: number
 }
 
 export const SHAPE_DEFAULT_SIZES: Record<

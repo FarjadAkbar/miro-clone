@@ -1,7 +1,7 @@
-import type { CanvasEdge, CanvasNode } from "@/types/canvas"
+import type { CanvasEdge, CanvasFlowNode } from "@/types/canvas"
 
 export interface CanvasSnapshot {
-  nodes: CanvasNode[]
+  nodes: CanvasFlowNode[]
   edges: CanvasEdge[]
 }
 

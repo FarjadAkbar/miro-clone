@@ -3,7 +3,7 @@
 import type { OnEdgesChange, OnNodesChange } from "@xyflow/react"
 import { useCallback, useEffect, useRef } from "react"
 import { applyCanvasTemplate } from "@/components/editor/starter-templates"
-import type { CanvasEdge, CanvasNode } from "@/types/canvas"
+import type { CanvasEdge, CanvasFlowNode } from "@/types/canvas"
 import { isCanvasSnapshot } from "@/types/canvas-snapshot"
 
 export type CanvasSaveStatus = "idle" | "saving" | "saved" | "error"
@@ -12,9 +12,9 @@ const AUTOSAVE_DEBOUNCE_MS = 1500
 
 interface UseCanvasAutosaveOptions {
   roomId: string
-  nodes: CanvasNode[]
+  nodes: CanvasFlowNode[]
   edges: CanvasEdge[]
-  onNodesChange: OnNodesChange<CanvasNode>
+  onNodesChange: OnNodesChange<CanvasFlowNode>
   onEdgesChange: OnEdgesChange<CanvasEdge>
   isFlowReady?: boolean
   onStatusChange?: (status: CanvasSaveStatus) => void

@@ -24,6 +24,7 @@ import {
   type CanvasTemplate,
 } from "@/components/editor/starter-templates"
 import { CanvasControlBar } from "@/components/editor/canvas-control-bar"
+import { CanvasGroup } from "@/components/editor/canvas-group"
 import { CanvasPresenceAvatars } from "@/components/editor/canvas-presence-avatars"
 import { CanvasPresenceCursor } from "@/components/editor/canvas-presence-cursor"
 import { CanvasEdge } from "@/components/editor/canvas-edge"
@@ -38,17 +39,18 @@ import {
 } from "@/hooks/use-canvas-autosave"
 import { useFlowStorageReady } from "@/hooks/use-flow-storage-ready"
 import { CANVAS_ZOOM_DURATION_MS } from "@/lib/canvas-control-constants"
-import {
-  createCanvasNode,
-  parseShapeDragPayload,
-} from "@/lib/canvas-node-factory"
+import { createNodeFromCanvasDrop } from "@/lib/canvas-drop"
+import { parseGroupDragPayload } from "@/lib/canvas-group"
+import { parseShapeDragPayload } from "@/lib/canvas-node-factory"
 import {
   CANVAS_EDGE_TYPE,
+  CANVAS_GROUP_DRAG_TYPE,
+  CANVAS_GROUP_TYPE,
   CANVAS_NODE_TYPE,
   CANVAS_SHAPE_DRAG_TYPE,
   DEFAULT_EDGE_COLOR,
   type CanvasEdge as CanvasEdgeType,
-  type CanvasNode as CanvasNodeType,
+  type CanvasFlowNode,
 } from "@/types/canvas"
 import "@xyflow/react/dist/style.css"
 
@@ -74,7 +76,7 @@ function EditorFlowCanvasInner({
   const canRedo = useCanRedo()
 
   const { nodes, edges, onNodesChange, onEdgesChange, onConnect, onDelete } =
-    useLiveblocksFlow<CanvasNodeType, CanvasEdgeType>({
+    useLiveblocksFlow<CanvasFlowNode, CanvasEdgeType>({
       suspense: true,
       nodes: { initial: [] },
       edges: { initial: [] },
@@ -128,6 +130,7 @@ function EditorFlowCanvasInner({
   const nodeTypes = useMemo(
     () => ({
       [CANVAS_NODE_TYPE]: CanvasNode,
+      [CANVAS_GROUP_TYPE]: CanvasGroup,
     }),
     []
   )
@@ -188,6 +191,32 @@ function EditorFlowCanvasInner({
         return
       }
 
+      const position = reactFlow.screenToFlowPosition({
+        x: event.clientX,
+        y: event.clientY,
+      })
+
+      const groupRaw = event.dataTransfer.getData(CANVAS_GROUP_DRAG_TYPE)
+      if (groupRaw) {
+        const payload = parseGroupDragPayload(groupRaw)
+        if (!payload) {
+          return
+        }
+
+        onNodesChange([
+          {
+            type: "add",
+            item: createNodeFromCanvasDrop({
+              kind: "group",
+              width: payload.width,
+              height: payload.height,
+              position,
+            }),
+          },
+        ])
+        return
+      }
+
       const raw = event.dataTransfer.getData(CANVAS_SHAPE_DRAG_TYPE)
       if (!raw) {
         return
@@ -198,22 +227,22 @@ function EditorFlowCanvasInner({
         return
       }
 
-      const position = reactFlow.screenToFlowPosition({
-        x: event.clientX,
-        y: event.clientY,
-      })
-
-      const node = createCanvasNode({
-        shape: payload.shape,
-        width: payload.width,
-        height: payload.height,
-        position,
-        componentKind: payload.componentKind,
-      })
-
-      onNodesChange([{ type: "add", item: node }])
+      onNodesChange([
+        {
+          type: "add",
+          item: createNodeFromCanvasDrop({
+            kind: "shape",
+            shape: payload.shape,
+            width: payload.width,
+            height: payload.height,
+            position,
+            componentKind: payload.componentKind,
+            existingNodes: nodes,
+          }),
+        },
+      ])
     },
-    [isFlowReady, onNodesChange, reactFlow]
+    [isFlowReady, nodes, onNodesChange, reactFlow]
   )
 
   return (

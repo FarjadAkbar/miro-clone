@@ -9,25 +9,27 @@ import {
 } from "react"
 import {
   CANVAS_EDGE_TYPE,
+  CANVAS_GROUP_TYPE,
   CANVAS_NODE_TYPE,
   type CanvasEdge,
-  type CanvasEdgeData,
+  type CanvasFlowNode,
+  type CanvasGroup,
   type CanvasNode,
-  type CanvasNodeData,
 } from "@/types/canvas"
 
 interface CanvasFlowContextValue {
   updateNodeLabel: (nodeId: string, label: string) => void
   updateNodeColor: (nodeId: string, color: string, textColor: string) => void
   updateEdgeLabel: (edgeId: string, label: string) => void
+  removeGroup: (groupId: string) => void
 }
 
 const CanvasFlowContext = createContext<CanvasFlowContextValue | null>(null)
 
 interface CanvasFlowProviderProps {
-  nodes: CanvasNode[]
+  nodes: CanvasFlowNode[]
   edges: CanvasEdge[]
-  onNodesChange: OnNodesChange<CanvasNode>
+  onNodesChange: OnNodesChange<CanvasFlowNode>
   onEdgesChange: OnEdgesChange<CanvasEdge>
   children: ReactNode
 }
@@ -39,23 +41,43 @@ export function CanvasFlowProvider({
   onEdgesChange,
   children,
 }: CanvasFlowProviderProps) {
-  const updateNodeData = useCallback(
-    (nodeId: string, dataPatch: Partial<CanvasNodeData>) => {
+  const updateNodeLabel = useCallback(
+    (nodeId: string, label: string) => {
       const node = nodes.find((entry) => entry.id === nodeId)
       if (!node) {
         return
       }
 
+      if (node.type === CANVAS_GROUP_TYPE) {
+        const group = node as CanvasGroup
+        onNodesChange([
+          {
+            type: "replace",
+            id: nodeId,
+            item: {
+              ...group,
+              type: CANVAS_GROUP_TYPE,
+              data: {
+                ...group.data,
+                label,
+              },
+            },
+          },
+        ])
+        return
+      }
+
+      const canvasNode = node as CanvasNode
       onNodesChange([
         {
           type: "replace",
           id: nodeId,
           item: {
-            ...node,
+            ...canvasNode,
             type: CANVAS_NODE_TYPE,
             data: {
-              ...node.data,
-              ...dataPatch,
+              ...canvasNode.data,
+              label,
             },
           },
         },
@@ -64,8 +86,35 @@ export function CanvasFlowProvider({
     [nodes, onNodesChange]
   )
 
-  const updateEdgeData = useCallback(
-    (edgeId: string, dataPatch: Partial<CanvasEdgeData>) => {
+  const updateNodeColor = useCallback(
+    (nodeId: string, color: string, textColor: string) => {
+      const node = nodes.find((entry) => entry.id === nodeId)
+      if (!node || node.type !== CANVAS_NODE_TYPE) {
+        return
+      }
+
+      const canvasNode = node as CanvasNode
+      onNodesChange([
+        {
+          type: "replace",
+          id: nodeId,
+          item: {
+            ...canvasNode,
+            type: CANVAS_NODE_TYPE,
+            data: {
+              ...canvasNode.data,
+              color,
+              textColor,
+            },
+          },
+        },
+      ])
+    },
+    [nodes, onNodesChange]
+  )
+
+  const updateEdgeLabel = useCallback(
+    (edgeId: string, label: string) => {
       const edge = edges.find((entry) => entry.id === edgeId)
       if (!edge) {
         return
@@ -79,9 +128,7 @@ export function CanvasFlowProvider({
             ...edge,
             type: CANVAS_EDGE_TYPE,
             data: {
-              ...edge.data,
-              label: edge.data?.label ?? "",
-              ...dataPatch,
+              label,
             },
           },
         },
@@ -90,30 +137,42 @@ export function CanvasFlowProvider({
     [edges, onEdgesChange]
   )
 
-  const updateNodeLabel = useCallback(
-    (nodeId: string, label: string) => {
-      updateNodeData(nodeId, { label })
-    },
-    [updateNodeData]
-  )
+  const removeGroup = useCallback(
+    (groupId: string) => {
+      const group = nodes.find(
+        (entry) => entry.id === groupId && entry.type === CANVAS_GROUP_TYPE
+      ) as CanvasGroup | undefined
+      if (!group) {
+        return
+      }
 
-  const updateNodeColor = useCallback(
-    (nodeId: string, color: string, textColor: string) => {
-      updateNodeData(nodeId, { color, textColor })
-    },
-    [updateNodeData]
-  )
+      const childUpdates = nodes
+        .filter((entry) => entry.parentId === groupId)
+        .map((child) => ({
+          type: "replace" as const,
+          id: child.id,
+          item: {
+            ...child,
+            parentId: undefined,
+            extent: undefined,
+            position: {
+              x: group.position.x + child.position.x,
+              y: group.position.y + child.position.y,
+            },
+          },
+        }))
 
-  const updateEdgeLabel = useCallback(
-    (edgeId: string, label: string) => {
-      updateEdgeData(edgeId, { label })
+      onNodesChange([
+        ...childUpdates,
+        { type: "remove", id: groupId },
+      ])
     },
-    [updateEdgeData]
+    [nodes, onNodesChange]
   )
 
   return (
     <CanvasFlowContext.Provider
-      value={{ updateNodeLabel, updateNodeColor, updateEdgeLabel }}
+      value={{ updateNodeLabel, updateNodeColor, updateEdgeLabel, removeGroup }}
     >
       {children}
     </CanvasFlowContext.Provider>

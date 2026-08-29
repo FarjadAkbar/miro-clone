@@ -6,6 +6,7 @@ import {
   NODE_COLORS,
   SHAPE_DEFAULT_SIZES,
   type CanvasEdge,
+  type CanvasFlowNode,
   type CanvasNode,
   type CanvasNodeShape,
 } from "@/types/canvas"
@@ -14,7 +15,7 @@ export interface CanvasTemplate {
   id: string
   name: string
   description: string
-  nodes: CanvasNode[]
+  nodes: CanvasFlowNode[]
   edges: CanvasEdge[]
 }
 
@@ -77,15 +78,25 @@ function templateEdge(
   }
 }
 
-export function getNodeDimensions(node: CanvasNode): { width: number; height: number } {
-  const defaults = SHAPE_DEFAULT_SIZES[node.data.shape]
+export function getNodeDimensions(node: CanvasFlowNode): {
+  width: number
+  height: number
+} {
+  if (node.type === CANVAS_NODE_TYPE) {
+    const defaults = SHAPE_DEFAULT_SIZES[node.data.shape]
+    return {
+      width: node.width ?? defaults.width,
+      height: node.height ?? defaults.height,
+    }
+  }
+
   return {
-    width: node.width ?? defaults.width,
-    height: node.height ?? defaults.height,
+    width: node.width ?? 420,
+    height: node.height ?? 280,
   }
 }
 
-export function getTemplateBounds(nodes: CanvasNode[]): TemplateBounds {
+export function getTemplateBounds(nodes: CanvasFlowNode[]): TemplateBounds {
   let minX = Infinity
   let minY = Infinity
   let maxX = -Infinity
@@ -113,7 +124,7 @@ export function getTemplateBounds(nodes: CanvasNode[]): TemplateBounds {
   }
 }
 
-export function getNodeCenter(node: CanvasNode): { x: number; y: number } {
+export function getNodeCenter(node: CanvasFlowNode): { x: number; y: number } {
   const { width, height } = getNodeDimensions(node)
   return {
     x: node.position.x + width / 2,
@@ -123,9 +134,9 @@ export function getNodeCenter(node: CanvasNode): { x: number; y: number } {
 
 export function applyCanvasTemplate(
   template: CanvasTemplate,
-  currentNodes: CanvasNode[],
+  currentNodes: CanvasFlowNode[],
   currentEdges: CanvasEdge[],
-  onNodesChange: OnNodesChange<CanvasNode>,
+  onNodesChange: OnNodesChange<CanvasFlowNode>,
   onEdgesChange: OnEdgesChange<CanvasEdge>
 ): void {
   onEdgesChange([

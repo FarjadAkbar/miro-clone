@@ -18,6 +18,9 @@ export const DESIGN_AGENT_ACTION_TYPES = [
   "delete_node",
   "add_edge",
   "delete_edge",
+  "add_group",
+  "update_group",
+  "delete_group",
 ] as const
 
 export type DesignAgentActionType = (typeof DESIGN_AGENT_ACTION_TYPES)[number]
@@ -34,6 +37,7 @@ export const designAgentActionSchema = z.discriminatedUnion("type", [
     width: z.number().positive().optional(),
     height: z.number().positive().optional(),
     componentKind: componentKindSchema.optional(),
+    parentId: z.string().min(1).optional(),
   }),
   z.object({
     type: z.literal("move_node"),
@@ -54,6 +58,7 @@ export const designAgentActionSchema = z.discriminatedUnion("type", [
     shape: shapeSchema.optional(),
     colorIndex: z.number().int().min(0).max(7).optional(),
     componentKind: componentKindSchema.optional(),
+    parentId: z.string().min(1).optional(),
   }),
   z.object({
     type: z.literal("delete_node"),
@@ -68,6 +73,28 @@ export const designAgentActionSchema = z.discriminatedUnion("type", [
   }),
   z.object({
     type: z.literal("delete_edge"),
+    id: z.string().min(1),
+  }),
+  z.object({
+    type: z.literal("add_group"),
+    id: z.string().min(1),
+    label: z.string(),
+    x: z.number(),
+    y: z.number(),
+    width: z.number().positive().optional(),
+    height: z.number().positive().optional(),
+  }),
+  z.object({
+    type: z.literal("update_group"),
+    id: z.string().min(1),
+    label: z.string().optional(),
+    x: z.number().optional(),
+    y: z.number().optional(),
+    width: z.number().positive().optional(),
+    height: z.number().positive().optional(),
+  }),
+  z.object({
+    type: z.literal("delete_group"),
     id: z.string().min(1),
   }),
 ])
@@ -94,6 +121,7 @@ export const designAgentActionLlmSchema = z.object({
   source: z.string().nullable(),
   target: z.string().nullable(),
   componentKind: componentKindSchema.nullable(),
+  parentId: z.string().nullable(),
 })
 
 export const designAgentPlanLlmSchema = z.object({
@@ -131,6 +159,15 @@ function resolveOptionalComponentKind(
   return value
 }
 
+function resolveOptionalParentId(
+  value: string | null | undefined
+): string | undefined {
+  if (value == null || value === "") {
+    return undefined
+  }
+  return value
+}
+
 /** Narrow a flat LLM action into a typed canvas action. */
 export function narrowDesignAgentAction(
   action: DesignAgentActionLlm
@@ -153,6 +190,7 @@ export function narrowDesignAgentAction(
         width: action.width ?? kindDefaults?.width ?? undefined,
         height: action.height ?? kindDefaults?.height ?? undefined,
         componentKind,
+        parentId: resolveOptionalParentId(action.parentId),
       })
     }
     case "move_node":
@@ -182,6 +220,7 @@ export function narrowDesignAgentAction(
         shape: action.shape ?? kindDefaults?.shape ?? undefined,
         colorIndex: action.colorIndex ?? kindDefaults?.colorIndex ?? undefined,
         componentKind,
+        parentId: resolveOptionalParentId(action.parentId),
       })
     }
     case "delete_node":
@@ -200,6 +239,31 @@ export function narrowDesignAgentAction(
     case "delete_edge":
       return designAgentActionSchema.parse({
         type: "delete_edge",
+        id: action.id,
+      })
+    case "add_group":
+      return designAgentActionSchema.parse({
+        type: "add_group",
+        id: action.id,
+        label: action.label ?? "Group",
+        x: requireNumber(action.x, "x"),
+        y: requireNumber(action.y, "y"),
+        width: action.width ?? undefined,
+        height: action.height ?? undefined,
+      })
+    case "update_group":
+      return designAgentActionSchema.parse({
+        type: "update_group",
+        id: action.id,
+        label: action.label ?? undefined,
+        x: action.x ?? undefined,
+        y: action.y ?? undefined,
+        width: action.width ?? undefined,
+        height: action.height ?? undefined,
+      })
+    case "delete_group":
+      return designAgentActionSchema.parse({
+        type: "delete_group",
         id: action.id,
       })
     default: {

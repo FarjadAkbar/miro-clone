@@ -6,7 +6,9 @@ import { ComponentKindIcon } from "@/components/editor/component-kind-icon"
 import { useShapeDrag } from "@/components/editor/shape-drag-preview"
 import { cn } from "@/lib/utils"
 import {
+  CANVAS_GROUP_DRAG_TYPE,
   CANVAS_SHAPE_DRAG_TYPE,
+  DEFAULT_GROUP_SIZE,
   NODE_SHAPES,
   SHAPE_DEFAULT_SIZES,
   type CanvasNodeShape,
@@ -17,7 +19,7 @@ import {
   type ComponentKind,
 } from "@/types/component-kind"
 
-type PanelTab = "components" | "shapes"
+type PanelTab = "components" | "shapes" | "groups"
 
 function ShapeIcon({ shape }: { shape: CanvasNodeShape }) {
   const className = "h-5 w-5 stroke-[1.75]"
@@ -197,6 +199,20 @@ export function ShapePanel() {
           >
             Shapes
           </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={tab === "groups"}
+            onClick={() => setTab("groups")}
+            className={cn(
+              "rounded-full px-3 py-1 text-xs font-medium transition-colors",
+              tab === "groups"
+                ? "bg-bg-elevated text-copy-primary"
+                : "text-copy-secondary hover:text-copy-primary"
+            )}
+          >
+            Groups
+          </button>
         </div>
 
         {tab === "components" ? (
@@ -230,7 +246,9 @@ export function ShapePanel() {
               )
             })}
           </div>
-        ) : (
+        ) : null}
+
+        {tab === "shapes" ? (
           <div className="flex items-center gap-1 px-1 pb-1">
             {NODE_SHAPES.map((shape) => (
               <button
@@ -257,7 +275,61 @@ export function ShapePanel() {
               </button>
             ))}
           </div>
-        )}
+        ) : null}
+
+        {tab === "groups" ? (
+          <div className="flex items-center gap-1 px-1 pb-1">
+            <button
+              type="button"
+              draggable
+              onDragStart={(event) => {
+                event.dataTransfer.setData(
+                  CANVAS_GROUP_DRAG_TYPE,
+                  JSON.stringify({
+                    width: DEFAULT_GROUP_SIZE.width,
+                    height: DEFAULT_GROUP_SIZE.height,
+                  })
+                )
+                event.dataTransfer.effectAllowed = "move"
+                if (dragImageRef.current) {
+                  event.dataTransfer.setDragImage(dragImageRef.current, 0, 0)
+                }
+                startShapeDrag({
+                  shape: "rectangle",
+                  width: DEFAULT_GROUP_SIZE.width,
+                  height: DEFAULT_GROUP_SIZE.height,
+                  x: event.clientX,
+                  y: event.clientY,
+                })
+              }}
+              onDragEnd={endShapeDrag}
+              className={cn(
+                "flex h-10 items-center gap-2 rounded-full px-3",
+                "text-copy-secondary transition-colors hover:bg-bg-subtle hover:text-copy-primary",
+                "cursor-grab active:cursor-grabbing"
+              )}
+              aria-label="Drag Group onto canvas"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                className="h-5 w-5 stroke-[1.75]"
+                aria-hidden
+              >
+                <rect
+                  x="3"
+                  y="5"
+                  width="18"
+                  height="14"
+                  rx="2"
+                  stroke="currentColor"
+                  strokeDasharray="3 2"
+                />
+              </svg>
+              <span className="text-xs font-medium">Group</span>
+            </button>
+          </div>
+        ) : null}
       </div>
     </div>
   )

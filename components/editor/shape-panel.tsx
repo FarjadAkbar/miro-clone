@@ -1,6 +1,8 @@
 "use client"
 
 import type { DragEvent, RefObject } from "react"
+import { useState } from "react"
+import { ComponentKindIcon } from "@/components/editor/component-kind-icon"
 import { useShapeDrag } from "@/components/editor/shape-drag-preview"
 import { cn } from "@/lib/utils"
 import {
@@ -9,6 +11,13 @@ import {
   SHAPE_DEFAULT_SIZES,
   type CanvasNodeShape,
 } from "@/types/canvas"
+import {
+  COMPONENT_KINDS,
+  getComponentKindDefinition,
+  type ComponentKind,
+} from "@/types/component-kind"
+
+type PanelTab = "components" | "shapes"
 
 function ShapeIcon({ shape }: { shape: CanvasNodeShape }) {
   const className = "h-5 w-5 stroke-[1.75]"
@@ -75,6 +84,7 @@ function handleShapeDragStart(
     height: number
     x: number
     y: number
+    componentKind?: ComponentKind
   }) => void,
   dragImageRef: RefObject<HTMLImageElement | null>
 ) {
@@ -103,8 +113,49 @@ function handleShapeDragStart(
   })
 }
 
+function handleComponentDragStart(
+  event: DragEvent<HTMLButtonElement>,
+  kind: ComponentKind,
+  startShapeDrag: (state: {
+    shape: CanvasNodeShape
+    width: number
+    height: number
+    x: number
+    y: number
+    componentKind?: ComponentKind
+  }) => void,
+  dragImageRef: RefObject<HTMLImageElement | null>
+) {
+  const definition = getComponentKindDefinition(kind)
+
+  event.dataTransfer.setData(
+    CANVAS_SHAPE_DRAG_TYPE,
+    JSON.stringify({
+      componentKind: kind,
+      shape: definition.shape,
+      width: definition.width,
+      height: definition.height,
+    })
+  )
+  event.dataTransfer.effectAllowed = "move"
+
+  if (dragImageRef.current) {
+    event.dataTransfer.setDragImage(dragImageRef.current, 0, 0)
+  }
+
+  startShapeDrag({
+    shape: definition.shape,
+    width: definition.width,
+    height: definition.height,
+    componentKind: kind,
+    x: event.clientX,
+    y: event.clientY,
+  })
+}
+
 export function ShapePanel() {
   const { startShapeDrag, endShapeDrag, dragImageRef } = useShapeDrag()
+  const [tab, setTab] = useState<PanelTab>("components")
 
   return (
     <div
@@ -112,26 +163,101 @@ export function ShapePanel() {
       role="toolbar"
       aria-label="Shape panel"
     >
-      <div className="flex items-center gap-1 rounded-full border border-surface-border bg-bg-surface/95 px-2 py-2 shadow-lg backdrop-blur-sm">
-        {NODE_SHAPES.map((shape) => (
+      <div className="flex flex-col gap-2 rounded-3xl border border-surface-border bg-bg-surface/95 p-2 shadow-lg backdrop-blur-sm">
+        <div
+          className="flex items-center gap-1 rounded-full bg-bg-subtle p-1"
+          role="tablist"
+          aria-label="Palette sections"
+        >
           <button
-            key={shape}
             type="button"
-            draggable
-            onDragStart={(event) =>
-              handleShapeDragStart(event, shape, startShapeDrag, dragImageRef)
-            }
-            onDragEnd={endShapeDrag}
+            role="tab"
+            aria-selected={tab === "components"}
+            onClick={() => setTab("components")}
             className={cn(
-              "flex h-10 w-10 cursor-grab items-center justify-center rounded-full",
-              "text-copy-secondary transition-colors hover:bg-bg-subtle hover:text-copy-primary",
-              "active:cursor-grabbing"
+              "rounded-full px-3 py-1 text-xs font-medium transition-colors",
+              tab === "components"
+                ? "bg-bg-elevated text-copy-primary"
+                : "text-copy-secondary hover:text-copy-primary"
             )}
-            aria-label={`Drag ${shape} onto canvas`}
           >
-            <ShapeIcon shape={shape} />
+            Components
           </button>
-        ))}
+          <button
+            type="button"
+            role="tab"
+            aria-selected={tab === "shapes"}
+            onClick={() => setTab("shapes")}
+            className={cn(
+              "rounded-full px-3 py-1 text-xs font-medium transition-colors",
+              tab === "shapes"
+                ? "bg-bg-elevated text-copy-primary"
+                : "text-copy-secondary hover:text-copy-primary"
+            )}
+          >
+            Shapes
+          </button>
+        </div>
+
+        {tab === "components" ? (
+          <div className="grid max-w-[22rem] grid-cols-7 gap-1 px-1 pb-1">
+            {COMPONENT_KINDS.map((kind) => {
+              const definition = getComponentKindDefinition(kind)
+              return (
+                <button
+                  key={kind}
+                  type="button"
+                  draggable
+                  title={definition.label}
+                  onDragStart={(event) =>
+                    handleComponentDragStart(
+                      event,
+                      kind,
+                      startShapeDrag,
+                      dragImageRef
+                    )
+                  }
+                  onDragEnd={endShapeDrag}
+                  className={cn(
+                    "flex h-10 w-10 cursor-grab items-center justify-center rounded-full",
+                    "text-copy-secondary transition-colors hover:bg-bg-subtle hover:text-copy-primary",
+                    "active:cursor-grabbing"
+                  )}
+                  aria-label={`Drag ${definition.label} onto canvas`}
+                >
+                  <ComponentKindIcon kind={kind} className="h-4 w-4" />
+                </button>
+              )
+            })}
+          </div>
+        ) : (
+          <div className="flex items-center gap-1 px-1 pb-1">
+            {NODE_SHAPES.map((shape) => (
+              <button
+                key={shape}
+                type="button"
+                draggable
+                onDragStart={(event) =>
+                  handleShapeDragStart(
+                    event,
+                    shape,
+                    startShapeDrag,
+                    dragImageRef
+                  )
+                }
+                onDragEnd={endShapeDrag}
+                className={cn(
+                  "flex h-10 w-10 cursor-grab items-center justify-center rounded-full",
+                  "text-copy-secondary transition-colors hover:bg-bg-subtle hover:text-copy-primary",
+                  "active:cursor-grabbing"
+                )}
+                aria-label={`Drag ${shape} onto canvas`}
+              >
+                <ShapeIcon shape={shape} />
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )

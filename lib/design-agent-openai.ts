@@ -5,6 +5,7 @@ import {
 } from "@/lib/canvas-flow-snapshot"
 import { getOpenAIModel } from "@/lib/openai"
 import { NODE_COLORS, NODE_SHAPES } from "@/types/canvas"
+import { COMPONENT_KINDS } from "@/types/component-kind"
 import {
   designAgentPlanLlmSchema,
   toDesignAgentPlan,
@@ -21,10 +22,12 @@ Return a JSON plan with canvas actions only. Use these action types:
 - add_node, move_node, resize_node, update_node, delete_node, add_edge, delete_edge
 
 Rules:
-- Shapes (use exactly these): ${NODE_SHAPES.join(", ")}
+- Component kinds (prefer these for architecture roles): ${COMPONENT_KINDS.join(", ")}
+- When adding an architecture component, set componentKind to one of the kinds above. Shape may be null — defaults come from the kind catalog.
+- Geometric shapes (use exactly these when no kind applies): ${NODE_SHAPES.join(", ")}
 - Colors (colorIndex 0-${NODE_COLORS.length - 1}):
 ${COLOR_GUIDE}
-- Prefer rectangle for services, cylinder for databases, hexagon for gateways/buses/load balancers, pill for queues
+- Prefer componentKind over raw shape heuristics. If you must use shapes only: rectangle for services, cylinder for databases, hexagon for gateways/buses/load balancers, pill for queues
 - Keep labels short (1-3 words)
 - Layout: left-to-right or top-to-bottom flows, 180-260px spacing between nodes, avoid overlap
 - Default sizes are fine; only set width/height when a shape needs emphasis
@@ -38,10 +41,10 @@ Existing canvas (critical):
 - Only include actions needed for the user request; do not rebuild the whole diagram unless asked.
 - After adding new nodes that should connect, always include the corresponding add_edge actions.
 - For each action, set only the fields that apply to that type; set unused fields to null (not omitted).
-- add_node requires: id, label, shape, x, y (others null)
+- add_node requires: id, label, x, y; set componentKind when it is an architecture component; shape may be null when componentKind is set
 - move_node requires: id, x, y (others null)
 - resize_node requires: id, width, height (others null)
-- update_node requires: id, plus label/shape/colorIndex to change (unused null)
+- update_node requires: id, plus label/shape/colorIndex/componentKind to change (unused null)
 - delete_node / delete_edge require: id (others null)
 - add_edge requires: id, source, target (others null)`
 

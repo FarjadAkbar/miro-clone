@@ -10,7 +10,15 @@ import {
   type ReactNode,
 } from "react"
 import { CanvasNodeShapeView } from "@/components/editor/canvas-node-shape"
-import { DEFAULT_NODE_COLOR, type CanvasNodeShape } from "@/types/canvas"
+import {
+  DEFAULT_NODE_COLOR,
+  type CanvasNodeShape,
+} from "@/types/canvas"
+import {
+  componentKindColor,
+  getComponentKindDefinition,
+  type ComponentKind,
+} from "@/types/component-kind"
 
 interface ShapeDragState {
   shape: CanvasNodeShape
@@ -18,10 +26,11 @@ interface ShapeDragState {
   height: number
   x: number
   y: number
+  componentKind?: ComponentKind
 }
 
 interface ShapeDragContextValue {
-  startShapeDrag: (state: Omit<ShapeDragState, "x" | "y"> & { x: number; y: number }) => void
+  startShapeDrag: (state: ShapeDragState) => void
   endShapeDrag: () => void
   dragImageRef: React.RefObject<HTMLImageElement | null>
 }
@@ -47,12 +56,9 @@ export function ShapeDragPreviewProvider({ children }: { children: ReactNode }) 
     dragImageRef.current = image
   }, [])
 
-  const startShapeDrag = useCallback(
-    (state: ShapeDragState) => {
-      setDrag(state)
-    },
-    []
-  )
+  const startShapeDrag = useCallback((state: ShapeDragState) => {
+    setDrag(state)
+  }, [])
 
   const endShapeDrag = useCallback(() => {
     setDrag(null)
@@ -87,6 +93,13 @@ export function ShapeDragPreviewProvider({ children }: { children: ReactNode }) 
     }
   }, [Boolean(drag)])
 
+  const previewFill = drag?.componentKind
+    ? componentKindColor(drag.componentKind).fill
+    : DEFAULT_NODE_COLOR.fill
+  const previewLabel = drag?.componentKind
+    ? getComponentKindDefinition(drag.componentKind).label
+    : ""
+
   return (
     <ShapeDragContext.Provider
       value={{ startShapeDrag, endShapeDrag, dragImageRef }}
@@ -105,8 +118,9 @@ export function ShapeDragPreviewProvider({ children }: { children: ReactNode }) 
         >
           <CanvasNodeShapeView
             shape={drag.shape}
-            label=""
-            fill={DEFAULT_NODE_COLOR.fill}
+            label={previewLabel}
+            fill={previewFill}
+            componentKind={drag.componentKind}
           />
         </div>
       ) : null}

@@ -1,4 +1,5 @@
 import type { Edge, Node } from "@xyflow/react"
+import type { ComponentKind } from "@/types/component-kind"
 
 export const CANVAS_NODE_TYPE = "canvasNode" as const
 export const CANVAS_EDGE_TYPE = "canvasEdge" as const
@@ -34,6 +35,7 @@ export interface CanvasNodeData extends Record<string, unknown> {
   color: string
   textColor: string
   shape: CanvasNodeShape
+  componentKind?: ComponentKind
 }
 
 export interface CanvasEdgeData extends Record<string, unknown> {
@@ -49,6 +51,7 @@ export interface CanvasShapeDragPayload {
   shape: CanvasNodeShape
   width: number
   height: number
+  componentKind?: ComponentKind
 }
 
 export const SHAPE_DEFAULT_SIZES: Record<

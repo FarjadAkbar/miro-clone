@@ -35,7 +35,10 @@ export function formatCanvasFlowSnapshot(snapshot: CanvasFlowSnapshot): string {
           .map((node) => {
             const width = node.width ?? "?"
             const height = node.height ?? "?"
-            return `- id="${node.id}" label="${node.data.label}" shape=${node.data.shape} at (${node.position.x}, ${node.position.y}) size=${width}x${height}`
+            const kind = node.data.componentKind
+              ? ` kind=${node.data.componentKind}`
+              : ""
+            return `- id="${node.id}" label="${node.data.label}" shape=${node.data.shape}${kind} at (${node.position.x}, ${node.position.y}) size=${width}x${height}`
           })
           .join("\n")
 

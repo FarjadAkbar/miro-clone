@@ -1,3 +1,4 @@
+import { ComponentKindIcon } from "@/components/editor/component-kind-icon"
 import type { ReactNode } from "react"
 import { cn } from "@/lib/utils"
 import {
@@ -5,6 +6,7 @@ import {
   textColorForFill,
   type CanvasNodeShape,
 } from "@/types/canvas"
+import type { ComponentKind } from "@/types/component-kind"
 
 interface CanvasNodeShapeViewProps {
   shape: CanvasNodeShape
@@ -13,6 +15,7 @@ interface CanvasNodeShapeViewProps {
   textColor?: string
   selected?: boolean
   className?: string
+  componentKind?: ComponentKind
   renderLabel?: (textColor: string) => ReactNode
 }
 
@@ -233,12 +236,13 @@ export function CanvasNodeShapeView({
   textColor: textColorProp,
   selected = false,
   className,
+  componentKind,
   renderLabel,
 }: CanvasNodeShapeViewProps) {
   const textColor = textColorProp ?? textColorForFill(fill)
 
   return (
-    <div className={cn("h-full w-full", className)}>
+    <div className={cn("relative h-full w-full", className)}>
       {shape === "rectangle" || shape === "pill" || shape === "circle" ? (
         <CssShape
           shape={shape}
@@ -275,6 +279,15 @@ export function CanvasNodeShapeView({
           textColor={textColor}
           renderLabel={renderLabel}
         />
+      ) : null}
+      {componentKind ? (
+        <div
+          className="pointer-events-none absolute inset-x-0 top-2 z-[5] flex justify-center"
+          style={{ color: textColor }}
+          aria-hidden
+        >
+          <ComponentKindIcon kind={componentKind} className="h-4 w-4" />
+        </div>
       ) : null}
     </div>
   )

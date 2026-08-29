@@ -7,11 +7,11 @@ import {
   DEFAULT_EDGE_COLOR,
   NODE_COLORS,
   SHAPE_DEFAULT_SIZES,
-  textColorForFill,
   type CanvasEdge,
   type CanvasNode,
   type CanvasNodeShape,
 } from "@/types/canvas"
+import { getComponentKindDefinition } from "@/types/component-kind"
 import type { DesignAgentAction } from "@/types/design-agent-actions"
 
 function buildNode(
@@ -33,6 +33,9 @@ function buildNode(
       color: color.fill,
       textColor: color.text,
       shape: action.shape,
+      ...(action.componentKind
+        ? { componentKind: action.componentKind }
+        : {}),
     },
   }
 }
@@ -110,22 +113,36 @@ export async function applyDesignAction(
             colorIndex !== undefined
               ? (NODE_COLORS[colorIndex] ?? NODE_COLORS[0])
               : null
+          const kindDefaults = action.componentKind
+            ? getComponentKindDefinition(action.componentKind)
+            : null
 
           flow.updateNode(action.id, {
             data: {
               ...node.data,
               ...(action.label !== undefined ? { label: action.label } : {}),
               ...(action.shape !== undefined ? { shape: action.shape } : {}),
+              ...(action.componentKind !== undefined
+                ? { componentKind: action.componentKind }
+                : {}),
               ...(color
                 ? { color: color.fill, textColor: color.text }
                 : {}),
             },
-            ...(action.shape !== undefined
+            ...(action.shape !== undefined || kindDefaults
               ? {
                   width:
-                    node.width ?? SHAPE_DEFAULT_SIZES[action.shape].width,
+                    kindDefaults?.width ??
+                    node.width ??
+                    (action.shape
+                      ? SHAPE_DEFAULT_SIZES[action.shape].width
+                      : undefined),
                   height:
-                    node.height ?? SHAPE_DEFAULT_SIZES[action.shape].height,
+                    kindDefaults?.height ??
+                    node.height ??
+                    (action.shape
+                      ? SHAPE_DEFAULT_SIZES[action.shape].height
+                      : undefined),
                 }
               : {}),
           })

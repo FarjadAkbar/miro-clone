@@ -208,6 +208,7 @@ function EditorFlowCanvasInner({
         width: payload.width,
         height: payload.height,
         position,
+        componentKind: payload.componentKind,
       })
 
       onNodesChange([{ type: "add", item: node }])

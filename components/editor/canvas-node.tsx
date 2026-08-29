@@ -81,18 +81,28 @@ export function CanvasNode({ id, data, selected }: NodeProps<CanvasNode>) {
           fill={data.color}
           textColor={textColor}
           selected={selected}
+          componentKind={data.componentKind}
           renderLabel={(labelTextColor) => (
-            <CanvasNodeLabelEditor
-              label={data.label}
-              textColor={labelTextColor}
-              isEditing={isEditing}
-              onStartEdit={() => setIsEditing(true)}
-              onLabelChange={handleLabelChange}
-              onEndEdit={() => setIsEditing(false)}
-            />
+            <div
+              className={
+                data.componentKind
+                  ? "absolute inset-0 flex flex-col pt-6"
+                  : "absolute inset-0"
+              }
+            >
+              <div className="relative min-h-0 flex-1">
+                <CanvasNodeLabelEditor
+                  label={data.label}
+                  textColor={labelTextColor}
+                  isEditing={isEditing}
+                  onStartEdit={() => setIsEditing(true)}
+                  onLabelChange={handleLabelChange}
+                  onEndEdit={() => setIsEditing(false)}
+                />
+              </div>
+            </div>
           )}
-        />
-      </div>
+        />      </div>
     </>
   )
 }

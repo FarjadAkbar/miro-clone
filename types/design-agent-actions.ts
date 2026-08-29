@@ -1,7 +1,14 @@
 import { z } from "zod"
 import { NODE_SHAPES } from "@/types/canvas"
+import {
+  COMPONENT_KINDS,
+  getComponentKindDefinition,
+  isComponentKind,
+  type ComponentKind,
+} from "@/types/component-kind"
 
 const shapeSchema = z.enum(NODE_SHAPES)
+const componentKindSchema = z.enum(COMPONENT_KINDS)
 
 export const DESIGN_AGENT_ACTION_TYPES = [
   "add_node",
@@ -26,6 +33,7 @@ export const designAgentActionSchema = z.discriminatedUnion("type", [
     colorIndex: z.number().int().min(0).max(7).optional(),
     width: z.number().positive().optional(),
     height: z.number().positive().optional(),
+    componentKind: componentKindSchema.optional(),
   }),
   z.object({
     type: z.literal("move_node"),
@@ -45,6 +53,7 @@ export const designAgentActionSchema = z.discriminatedUnion("type", [
     label: z.string().optional(),
     shape: shapeSchema.optional(),
     colorIndex: z.number().int().min(0).max(7).optional(),
+    componentKind: componentKindSchema.optional(),
   }),
   z.object({
     type: z.literal("delete_node"),
@@ -84,6 +93,7 @@ export const designAgentActionLlmSchema = z.object({
   height: z.number().positive().nullable(),
   source: z.string().nullable(),
   target: z.string().nullable(),
+  componentKind: componentKindSchema.nullable(),
 })
 
 export const designAgentPlanLlmSchema = z.object({
@@ -109,23 +119,42 @@ function requireString(value: string | null | undefined, field: string): string 
   return value
 }
 
+function resolveOptionalComponentKind(
+  value: string | null | undefined
+): ComponentKind | undefined {
+  if (value == null || value === "") {
+    return undefined
+  }
+  if (!isComponentKind(value)) {
+    throw new Error(`Unknown component kind: ${value}`)
+  }
+  return value
+}
+
 /** Narrow a flat LLM action into a typed canvas action. */
 export function narrowDesignAgentAction(
   action: DesignAgentActionLlm
 ): DesignAgentAction {
   switch (action.type) {
-    case "add_node":
+    case "add_node": {
+      const componentKind = resolveOptionalComponentKind(action.componentKind)
+      const kindDefaults = componentKind
+        ? getComponentKindDefinition(componentKind)
+        : null
+
       return designAgentActionSchema.parse({
         type: "add_node",
         id: action.id,
-        label: action.label ?? "",
-        shape: action.shape ?? "rectangle",
+        label: action.label ?? kindDefaults?.label ?? "",
+        shape: action.shape ?? kindDefaults?.shape ?? "rectangle",
         x: requireNumber(action.x, "x"),
         y: requireNumber(action.y, "y"),
-        colorIndex: action.colorIndex ?? undefined,
-        width: action.width ?? undefined,
-        height: action.height ?? undefined,
+        colorIndex: action.colorIndex ?? kindDefaults?.colorIndex ?? undefined,
+        width: action.width ?? kindDefaults?.width ?? undefined,
+        height: action.height ?? kindDefaults?.height ?? undefined,
+        componentKind,
       })
+    }
     case "move_node":
       return designAgentActionSchema.parse({
         type: "move_node",
@@ -140,14 +169,21 @@ export function narrowDesignAgentAction(
         width: requireNumber(action.width, "width"),
         height: requireNumber(action.height, "height"),
       })
-    case "update_node":
+    case "update_node": {
+      const componentKind = resolveOptionalComponentKind(action.componentKind)
+      const kindDefaults = componentKind
+        ? getComponentKindDefinition(componentKind)
+        : null
+
       return designAgentActionSchema.parse({
         type: "update_node",
         id: action.id,
         label: action.label ?? undefined,
-        shape: action.shape ?? undefined,
-        colorIndex: action.colorIndex ?? undefined,
+        shape: action.shape ?? kindDefaults?.shape ?? undefined,
+        colorIndex: action.colorIndex ?? kindDefaults?.colorIndex ?? undefined,
+        componentKind,
       })
+    }
     case "delete_node":
       return designAgentActionSchema.parse({
         type: "delete_node",

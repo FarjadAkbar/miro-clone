@@ -241,7 +241,7 @@ export function ShapePanel() {
                   )}
                   aria-label={`Drag ${definition.label} onto canvas`}
                 >
-                  <ComponentKindIcon kind={kind} className="h-4 w-4" />
+                  <ComponentKindIcon kind={kind} withTile size="sm" />
                 </button>
               )
             })}

@@ -15,6 +15,7 @@ import {
   MarkerType,
   ReactFlow,
   ReactFlowProvider,
+  SelectionMode,
   useReactFlow,
 } from "@xyflow/react"
 import { useCallback, useMemo, type DragEvent } from "react"
@@ -44,7 +45,7 @@ import {
   type CanvasSaveStatus,
 } from "@/hooks/use-canvas-autosave"
 import { useFlowStorageReady } from "@/hooks/use-flow-storage-ready"
-import { CANVAS_ZOOM_DURATION_MS } from "@/lib/canvas-control-constants"
+import { CANVAS_MAX_ZOOM, CANVAS_MIN_ZOOM, CANVAS_ZOOM_DURATION_MS } from "@/lib/canvas-control-constants"
 import { createNodeFromCanvasDrop } from "@/lib/canvas-drop"
 import { parseGroupDragPayload } from "@/lib/canvas-group"
 import { parseShapeDragPayload } from "@/lib/canvas-node-factory"
@@ -287,7 +288,20 @@ function EditorFlowCanvasInner({
               onDelete={onDelete}
               connectionMode={ConnectionMode.Loose}
               connectionLineType={ConnectionLineType.SmoothStep}
+              connectionRadius={48}
+              connectionLineStyle={{
+                stroke: "var(--color-accent-ai)",
+                strokeWidth: 2,
+              }}
+              minZoom={CANVAS_MIN_ZOOM}
+              maxZoom={CANVAS_MAX_ZOOM}
               fitView
+              fitViewOptions={{ padding: 0.2, minZoom: CANVAS_MIN_ZOOM }}
+              selectionOnDrag
+              selectionMode={SelectionMode.Partial}
+              panOnDrag={[1, 2]}
+              multiSelectionKeyCode="Shift"
+              deleteKeyCode={["Backspace", "Delete"]}
               className={cn(
                 "bg-bg-base",
                 isAiApplyActive && "canvas-apply-animating"

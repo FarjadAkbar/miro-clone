@@ -1,4 +1,4 @@
-import { ComponentKindIcon } from "@/components/editor/component-kind-icon"
+import { ArchitectureKindIcon } from "@/components/editor/architecture-icons"
 import type { ReactNode } from "react"
 import { cn } from "@/lib/utils"
 import {
@@ -53,6 +53,45 @@ function NodeLabel({
     >
       <span className="truncate">{label || "\u00A0"}</span>
     </span>
+  )
+}
+
+function ArchitectureKindCard({
+  kind,
+  label,
+  selected,
+  textColor,
+  renderLabel,
+}: {
+  kind: ComponentKind
+  label: string
+  selected: boolean
+  textColor: string
+  renderLabel?: (textColor: string) => ReactNode
+}) {
+  return (
+    <div
+      className={cn(
+        "relative flex h-full w-full flex-col items-center justify-center gap-2 rounded-2xl border px-2 py-2",
+        selected
+          ? "border-brand bg-bg-elevated/90"
+          : "border-transparent bg-transparent"
+      )}
+    >
+      <ArchitectureKindIcon kind={kind} withTile size="lg" />
+      <div className="relative min-h-5 w-full shrink-0">
+        {renderLabel ? (
+          renderLabel(textColor)
+        ) : (
+          <span
+            className="block truncate text-center text-xs font-medium"
+            style={{ color: textColor }}
+          >
+            {label || "\u00A0"}
+          </span>
+        )}
+      </div>
+    </div>
   )
 }
 
@@ -241,6 +280,20 @@ export function CanvasNodeShapeView({
 }: CanvasNodeShapeViewProps) {
   const textColor = textColorProp ?? textColorForFill(fill)
 
+  if (componentKind) {
+    return (
+      <div className={cn("relative h-full w-full", className)}>
+        <ArchitectureKindCard
+          kind={componentKind}
+          label={label}
+          selected={selected}
+          textColor={textColor}
+          renderLabel={renderLabel}
+        />
+      </div>
+    )
+  }
+
   return (
     <div className={cn("relative h-full w-full", className)}>
       {shape === "rectangle" || shape === "pill" || shape === "circle" ? (
@@ -279,15 +332,6 @@ export function CanvasNodeShapeView({
           textColor={textColor}
           renderLabel={renderLabel}
         />
-      ) : null}
-      {componentKind ? (
-        <div
-          className="pointer-events-none absolute inset-x-0 top-2 z-[5] flex justify-center"
-          style={{ color: textColor }}
-          aria-hidden
-        >
-          <ComponentKindIcon kind={componentKind} className="h-4 w-4" />
-        </div>
       ) : null}
     </div>
   )

@@ -32,8 +32,15 @@ ${COLOR_GUIDE}
 - Use Groups (add_group) for tiers/regions such as "API Servers" or "Database Tier". Add the Group first, then add_node with parentId set to that Group id.
 - When parentId is set on add_node, x/y are absolute canvas coordinates (the app converts them to Group-relative containment).
 - Keep labels short (1-3 words)
-- Layout: left-to-right or top-to-bottom flows, 180-260px spacing between nodes, avoid overlap
+- Layout is critical — overlapping nodes are a hard failure:
+  - Use a clear left-to-right request path (client → edge → services → data)
+  - Horizontal gap between sibling nodes: at least 280px (center-to-center ≥ 320px)
+  - Vertical gap between rows: at least 200px (center-to-center ≥ 240px)
+  - Never place two nodes at the same or nearly same (x, y); stagger by ≥ 220px
+  - Size Groups large enough to contain children with ≥ 40px padding on every side
+  - Prefer 3–5 columns / tiers rather than stacking everything in one column
 - Default sizes are fine; only set width/height when a shape needs emphasis
+- For full system designs, include Groups for Client, Edge, App, and Data tiers when it clarifies the architecture
 
 Existing canvas (critical):
 - When the user refers to a component already on the canvas, REUSE its existing node id. Match by label (case-insensitive) or obvious synonym (e.g. "server" ≈ "API Server").

@@ -228,6 +228,7 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Session Notes
 
+- Canvas UX polish: sequential hop Flow playhead; minZoom 0.05; marquee multi-select + Delete; larger connect handles; WhatsApp/YouTube templates; stricter AI layout spacing.
 - Flow animation + Present mode: `resolveTravelSequences` + brief post-apply play; Present toggle on control bar; edge travelers show direction and hop order (not metrics).
 - Apply animation: enter fade/scale for Nodes/Groups and fade for Edges during AI apply; soft RF node transitions; Design apply staggered via `nextApplyActionDelayMs`.
 - Wire Spec generation: Specs tab Generate Spec posts canvas+chat via `buildSpecTriggerBody` → `/api/ai/spec` + token; `useSpecAgentRun` tracks Trigger run; list refresh on complete; Groups omitted from Spec payload.

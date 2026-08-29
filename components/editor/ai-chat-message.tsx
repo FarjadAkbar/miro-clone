@@ -3,14 +3,24 @@
 import { formatChatTimestamp } from "@/lib/format-chat-timestamp"
 import { cn } from "@/lib/utils"
 import type { AiChatMessage } from "@/types/tasks"
+import { Button } from "@/components/ui/button"
 
 interface AiChatMessageProps {
   message: AiChatMessage
   isOwnMessage: boolean
+  onGenerateOnCanvas?: () => void
+  generateDisabled?: boolean
 }
 
-export function AiChatMessageItem({ message, isOwnMessage }: AiChatMessageProps) {
+export function AiChatMessageItem({
+  message,
+  isOwnMessage,
+  onGenerateOnCanvas,
+  generateDisabled = false,
+}: AiChatMessageProps) {
   const isAssistant = message.role === "assistant"
+  const showGenerate =
+    isAssistant && message.offerGenerate && typeof onGenerateOnCanvas === "function"
 
   return (
     <article
@@ -58,6 +68,17 @@ export function AiChatMessageItem({ message, isOwnMessage }: AiChatMessageProps)
       >
         {message.content}
       </p>
+      {showGenerate ? (
+        <Button
+          type="button"
+          size="sm"
+          className="mt-3 w-full bg-accent-ai text-white hover:bg-accent-ai/90"
+          disabled={generateDisabled}
+          onClick={onGenerateOnCanvas}
+        >
+          Generate on canvas
+        </Button>
+      ) : null}
     </article>
   )
 }

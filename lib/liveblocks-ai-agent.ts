@@ -2,7 +2,9 @@ import type { JsonObject } from "@liveblocks/client"
 import type { Liveblocks } from "@liveblocks/node"
 import { getLiveblocks } from "@/lib/liveblocks"
 import {
+  AI_AGENT_DISPLAY_NAME,
   AI_AGENT_USER_ID,
+  AI_CHAT_FEED_ID,
   AI_STATUS_FEED_ID,
   AI_STATUS_MESSAGE_ID,
 } from "@/types/tasks"
@@ -17,6 +19,18 @@ async function ensureAiStatusFeed(client: Liveblocks, roomId: string) {
       roomId,
       feedId: AI_STATUS_FEED_ID,
       metadata: { name: "AI Status" },
+    })
+  } catch {
+    // Feed already exists.
+  }
+}
+
+async function ensureAiChatFeed(client: Liveblocks, roomId: string) {
+  try {
+    await client.createFeed({
+      roomId,
+      feedId: AI_CHAT_FEED_ID,
+      metadata: { name: "AI Chat" },
     })
   } catch {
     // Feed already exists.
@@ -44,6 +58,29 @@ export async function publishAiStatus(roomId: string, text: string) {
       data,
     })
   }
+}
+
+export async function publishAiChatMessage(
+  roomId: string,
+  content: string,
+  options?: { offerGenerate?: boolean }
+) {
+  const client = getLiveblocks()
+  await ensureAiChatFeed(client, roomId)
+
+  const data = {
+    sender: AI_AGENT_DISPLAY_NAME,
+    role: "assistant",
+    content,
+    timestamp: Date.now(),
+    ...(options?.offerGenerate ? { offerGenerate: true } : {}),
+  } as JsonObject
+
+  await client.createFeedMessage({
+    roomId,
+    feedId: AI_CHAT_FEED_ID,
+    data,
+  })
 }
 
 export async function setAiAgentPresence(

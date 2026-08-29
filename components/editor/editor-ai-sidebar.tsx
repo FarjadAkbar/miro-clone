@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { useAiChatFeed } from "@/hooks/use-ai-chat-feed"
 import { useDesignAgentRun } from "@/hooks/use-design-agent-run"
 import { cn } from "@/lib/utils"
+import type { DesignAgentTaskOutput } from "@/types/design-agent"
 
 interface EditorAiSidebarProps {
   open: boolean
@@ -59,11 +60,18 @@ function AiArchitectTab({ roomId }: { roomId: string }) {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
-  const onRunComplete = useCallback(async () => {
-    await sendAssistantMessage(
-      "Design complete. Check the canvas for updates."
-    )
-  }, [sendAssistantMessage])
+  const onRunComplete = useCallback(
+    async (output?: DesignAgentTaskOutput) => {
+      if (output?.kind === "interview") {
+        return
+      }
+
+      await sendAssistantMessage(
+        "Design complete. Check the canvas for updates."
+      )
+    },
+    [sendAssistantMessage]
+  )
 
   const onRunFailed = useCallback(
     async (message: string) => {
@@ -76,6 +84,16 @@ function AiArchitectTab({ roomId }: { roomId: string }) {
     onRunComplete,
     onRunFailed,
   })
+
+  const historyForRun = useCallback(() => {
+    return chatMessages.map((item) => ({
+      role: item.message.role,
+      content: item.message.content,
+      ...(item.message.offerGenerate
+        ? { offerGenerate: true as const }
+        : {}),
+    }))
+  }, [chatMessages])
 
   const resizeTextarea = useCallback(() => {
     const textarea = textareaRef.current
@@ -106,6 +124,8 @@ function AiArchitectTab({ roomId }: { roomId: string }) {
         return
       }
 
+      const history = historyForRun()
+
       try {
         await sendUserMessage(trimmed)
         setDraft("")
@@ -114,10 +134,42 @@ function AiArchitectTab({ roomId }: { roomId: string }) {
         return
       }
 
-      await startRun(trimmed, roomId)
+      await startRun(trimmed, roomId, { intent: "auto", history })
     },
-    [isRunActive, roomId, sendAssistantMessage, sendUserMessage, startRun]
+    [
+      historyForRun,
+      isRunActive,
+      roomId,
+      sendAssistantMessage,
+      sendUserMessage,
+      startRun,
+    ]
   )
+
+  const handleGenerateOnCanvas = useCallback(async () => {
+    if (isRunActive) {
+      return
+    }
+
+    const history = historyForRun()
+    const confirm = "Generate on canvas"
+
+    try {
+      await sendUserMessage(confirm)
+    } catch {
+      await sendAssistantMessage("Could not start Generate on canvas. Try again.")
+      return
+    }
+
+    await startRun(confirm, roomId, { intent: "generate", history })
+  }, [
+    historyForRun,
+    isRunActive,
+    roomId,
+    sendAssistantMessage,
+    sendUserMessage,
+    startRun,
+  ])
 
   const handleSend = () => {
     void submitMessage(draft)
@@ -132,6 +184,10 @@ function AiArchitectTab({ roomId }: { roomId: string }) {
     }
   }
 
+  const latestOfferMessageId = [...chatMessages]
+    .reverse()
+    .find((item) => item.message.offerGenerate)?.id
+
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
@@ -145,8 +201,8 @@ function AiArchitectTab({ roomId }: { roomId: string }) {
                 Start architecting
               </p>
               <p className="max-w-[220px] text-xs text-copy-muted">
-                Describe a system design and Ghost AI will update the canvas
-                for everyone in the room.
+                Describe a system. Open-ended asks start a Design interview;
+                clear edits update the canvas for everyone.
               </p>
             </div>
             <div className="flex flex-wrap justify-center gap-2">
@@ -172,6 +228,14 @@ function AiArchitectTab({ roomId }: { roomId: string }) {
                 isOwnMessage={
                   item.message.sender === (self.info.name || "Guest")
                 }
+                onGenerateOnCanvas={
+                  item.id === latestOfferMessageId
+                    ? () => {
+                        void handleGenerateOnCanvas()
+                      }
+                    : undefined
+                }
+                generateDisabled={isRunActive}
               />
             ))}
             <div ref={messagesEndRef} />

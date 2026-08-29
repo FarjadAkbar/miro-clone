@@ -21,7 +21,6 @@ export function CanvasGroup({
   data,
   selected,
 }: NodeProps<CanvasGroupNode>) {
-  const { deleteElements } = useReactFlow()
   const { updateNodeLabel, removeGroup } = useCanvasFlow()
   const [isEditing, setIsEditing] = useState(false)
 

@@ -1,4 +1,8 @@
 import { badRequestResponse } from "@/lib/api/responses"
+import type {
+  DesignAgentHistoryItem,
+  DesignAgentPayloadIntent,
+} from "@/types/design-agent"
 
 interface ParseResult<T> {
   ok: true
@@ -16,6 +20,45 @@ export interface DesignTriggerBody {
   prompt: string
   roomId: string
   projectId: string
+  intent: DesignAgentPayloadIntent
+  history: DesignAgentHistoryItem[]
+}
+
+function parseHistory(value: unknown): DesignAgentHistoryItem[] | null {
+  if (value === undefined) {
+    return []
+  }
+
+  if (!Array.isArray(value)) {
+    return null
+  }
+
+  const history: DesignAgentHistoryItem[] = []
+
+  for (const entry of value) {
+    if (entry === null || typeof entry !== "object" || Array.isArray(entry)) {
+      return null
+    }
+
+    const record = entry as Record<string, unknown>
+    const role = record.role
+    const content =
+      typeof record.content === "string" ? record.content.trim() : ""
+
+    if ((role !== "user" && role !== "assistant") || !content) {
+      return null
+    }
+
+    history.push({
+      role,
+      content,
+      ...(typeof record.offerGenerate === "boolean"
+        ? { offerGenerate: record.offerGenerate }
+        : {}),
+    })
+  }
+
+  return history
 }
 
 export async function parseDesignTriggerBody(
@@ -39,6 +82,10 @@ export async function parseDesignTriggerBody(
   const roomId = typeof record.roomId === "string" ? record.roomId.trim() : ""
   const projectId =
     typeof record.projectId === "string" ? record.projectId.trim() : ""
+  const intentRaw = record.intent
+  const intent: DesignAgentPayloadIntent =
+    intentRaw === "generate" ? "generate" : "auto"
+  const history = parseHistory(record.history)
 
   if (!prompt) {
     return { ok: false, response: badRequestResponse("prompt is required") }
@@ -62,7 +109,11 @@ export async function parseDesignTriggerBody(
     }
   }
 
-  return { ok: true, data: { prompt, roomId, projectId } }
+  if (history === null) {
+    return { ok: false, response: badRequestResponse("history is invalid") }
+  }
+
+  return { ok: true, data: { prompt, roomId, projectId, intent, history } }
 }
 
 export async function parseDesignTokenBody(

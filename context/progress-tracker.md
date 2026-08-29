@@ -192,11 +192,10 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## In Progress
 
-- Architecture canvas v2 — Groups done; next: Hybrid Design interview
+- Architecture canvas v2 — hybrid Design interview done; next: Wire Spec generation
 
 ## Next Up
 
-- Architecture canvas v2: Hybrid Design interview + Generate on canvas
 - Architecture canvas v2: Wire Spec generation
 - Architecture canvas v2: Apply + Flow animation + Present mode
 - #5 Delete/Backspace shortcuts
@@ -225,9 +224,11 @@ Update this file whenever the current phase, active feature, or implementation s
 - Design chat planning goes through `runDesignAgentTurn` (snapshot + message → turn result); OpenAI `generateDesignPlan` is injected as the plan dependency so the turn seam stays testable without Liveblocks/UI.
 - Nodes may carry optional `componentKind` (v1 catalog in `types/component-kind.ts`); geometric `shape` remains required for rendering; Design plans prefer kinds and fill shape/color/size from the catalog when omitted.
 - Groups are `canvasGroup` flow nodes with real React Flow containment (`parentId` + `extent: "parent"`); Design plans use `add_group` / `update_group` / `delete_group` and `parentId` on nodes; absolute coords convert to Group-relative on apply/drop.
+- Hybrid Design chat: `decideDesignAgentTurn` chooses interview vs plan; interview replies go to `ai-chat` with optional `offerGenerate`; Generate on canvas uses `intent: "generate"` to force a plan from chat history; clear edits still plan/apply immediately.
 
 ## Session Notes
 
+- Hybrid Design interview: turn outcomes interview|plan; Generate on canvas button; history + intent in design API/Trigger.
 - Groups: named frames with containment; Groups tab; Design plan group actions; drop-to-nest.
 - Component kinds: shape panel Components|Shapes; kind icons; drag/drop + Design plan persist `componentKind`; OpenAI prompt updated.
 - Prefactor Design agent turn: added `lib/design-agent-turn.ts` + Vitest; Trigger `design-agent` calls `runDesignAgentTurn` then applies plan; behavior still always-plan.

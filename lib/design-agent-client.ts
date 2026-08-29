@@ -1,11 +1,22 @@
+import type {
+  DesignAgentHistoryItem,
+  DesignAgentPayloadIntent,
+} from "@/types/design-agent"
+
 export interface DesignAgentTriggerResult {
   runId: string
   publicToken: string
 }
 
+export interface TriggerDesignAgentOptions {
+  intent?: DesignAgentPayloadIntent
+  history?: DesignAgentHistoryItem[]
+}
+
 export async function triggerDesignAgent(
   prompt: string,
-  roomId: string
+  roomId: string,
+  options: TriggerDesignAgentOptions = {}
 ): Promise<DesignAgentTriggerResult> {
   const designResponse = await fetch("/api/ai/design", {
     method: "POST",
@@ -14,6 +25,8 @@ export async function triggerDesignAgent(
       prompt,
       roomId,
       projectId: roomId,
+      intent: options.intent ?? "auto",
+      history: options.history ?? [],
     }),
   })
 

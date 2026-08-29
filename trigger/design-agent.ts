@@ -1,27 +1,35 @@
 import { logger, task } from "@trigger.dev/sdk"
 import { applyDesignActions } from "@/lib/canvas-design-actions"
 import { getCanvasFlowSnapshot } from "@/lib/canvas-flow-snapshot"
+import { decideDesignAgentTurn } from "@/lib/design-agent-decide"
 import { generateDesignPlan } from "@/lib/design-agent-openai"
 import { runDesignAgentTurn } from "@/lib/design-agent-turn"
 import {
   clearAiAgentPresence,
+  publishAiChatMessage,
   publishAiStatus,
   setAiAgentPresence,
 } from "@/lib/liveblocks-ai-agent"
 import {
   DESIGN_AGENT_TASK_ID,
   type DesignAgentPayload,
+  type DesignAgentTaskOutput,
 } from "@/types/design-agent"
 
 export const designAgentTask = task({
   id: DESIGN_AGENT_TASK_ID,
-  run: async (payload: DesignAgentPayload) => {
-    const { prompt, roomId } = payload
+  run: async (payload: DesignAgentPayload): Promise<DesignAgentTaskOutput> => {
+    const { prompt, roomId, intent = "auto", history = [] } = payload
 
-    logger.info("Design agent started", { roomId, promptLength: prompt.length })
+    logger.info("Design agent started", {
+      roomId,
+      promptLength: prompt.length,
+      intent,
+      historyLength: history.length,
+    })
 
     try {
-      await publishAiStatus(roomId, "Starting design generation…")
+      await publishAiStatus(roomId, "Starting Design chat…")
       await setAiAgentPresence(roomId, {
         cursor: { x: 120, y: 120 },
         thinking: true,
@@ -32,9 +40,37 @@ export const designAgentTask = task({
 
       await publishAiStatus(roomId, "Interpreting your prompt…")
       const turn = await runDesignAgentTurn(
-        { message: prompt, canvas },
-        { generatePlan: generateDesignPlan }
+        {
+          message: prompt,
+          canvas,
+          history,
+          intent,
+        },
+        {
+          decideTurn: decideDesignAgentTurn,
+          generatePlan: generateDesignPlan,
+        }
       )
+
+      if (turn.kind === "interview") {
+        await publishAiChatMessage(roomId, turn.message, {
+          offerGenerate: turn.offerGenerate,
+        })
+        await publishAiStatus(
+          roomId,
+          turn.offerGenerate
+            ? "Design interview ready — Generate on canvas available."
+            : "Design interview in progress."
+        )
+        await clearAiAgentPresence(roomId)
+
+        return {
+          roomId,
+          kind: "interview",
+          offerGenerate: turn.offerGenerate,
+        }
+      }
+
       const { plan } = turn
 
       logger.info("Design plan generated", {
@@ -61,6 +97,7 @@ export const designAgentTask = task({
 
       return {
         roomId,
+        kind: "plan",
         actionCount: plan.actions.length,
       }
     } catch (error) {

@@ -2,7 +2,11 @@
 
 import { useRealtimeRun } from "@trigger.dev/react-hooks"
 import { useCallback, useEffect, useRef, useState } from "react"
-import { triggerDesignAgent } from "@/lib/design-agent-client"
+import {
+  triggerDesignAgent,
+  type TriggerDesignAgentOptions,
+} from "@/lib/design-agent-client"
+import type { DesignAgentTaskOutput } from "@/types/design-agent"
 
 const TERMINAL_RUN_STATUSES = new Set([
   "COMPLETED",
@@ -15,7 +19,7 @@ const TERMINAL_RUN_STATUSES = new Set([
 ])
 
 interface UseDesignAgentRunOptions {
-  onRunComplete: () => void | Promise<void>
+  onRunComplete: (output?: DesignAgentTaskOutput) => void | Promise<void>
   onRunFailed: (message: string) => void | Promise<void>
 }
 
@@ -45,11 +49,15 @@ export function useDesignAgentRun({
   }, [])
 
   const startRun = useCallback(
-    async (prompt: string, roomId: string) => {
+    async (
+      prompt: string,
+      roomId: string,
+      options: TriggerDesignAgentOptions = {}
+    ) => {
       setIsStarting(true)
 
       try {
-        const result = await triggerDesignAgent(prompt, roomId)
+        const result = await triggerDesignAgent(prompt, roomId, options)
         handledRunRef.current = null
         setRunId(result.runId)
         setPublicToken(result.publicToken)
@@ -80,7 +88,8 @@ export function useDesignAgentRun({
     handledRunRef.current = runId
 
     if (run.status === "COMPLETED") {
-      void Promise.resolve(onRunComplete()).finally(clearRun)
+      const output = run.output as DesignAgentTaskOutput | undefined
+      void Promise.resolve(onRunComplete(output)).finally(clearRun)
       return
     }
 

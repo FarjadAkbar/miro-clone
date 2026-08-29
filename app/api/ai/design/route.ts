@@ -19,7 +19,7 @@ export async function POST(request: Request) {
     return parsed.response
   }
 
-  const { prompt, roomId, projectId } = parsed.data
+  const { prompt, roomId, projectId, intent, history } = parsed.data
   const access = await getAccessibleProject(projectId)
 
   if (access.status === "unauthenticated") {
@@ -40,6 +40,8 @@ export async function POST(request: Request) {
       {
         prompt,
         roomId,
+        intent,
+        history,
       }
     )
 

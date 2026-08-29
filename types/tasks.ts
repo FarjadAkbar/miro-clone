@@ -19,6 +19,7 @@ export const aiChatMessageSchema = z.object({
   role: aiChatMessageRoleSchema,
   content: z.string(),
   timestamp: z.number(),
+  offerGenerate: z.boolean().optional(),
 })
 
 export type AiChatMessage = z.infer<typeof aiChatMessageSchema>

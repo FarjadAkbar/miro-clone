@@ -14,10 +14,12 @@ import { CanvasNodeHandles } from "@/components/editor/canvas-node-handles"
 import { CanvasNodeShapeView } from "@/components/editor/canvas-node-shape"
 import { NodeColorToolbar } from "@/components/editor/node-color-toolbar"
 import { NodeDeleteButton } from "@/components/editor/node-delete-button"
+import { useApplyEnterClassName } from "@/hooks/use-apply-enter"
 import {
   MIN_NODE_HEIGHT,
   MIN_NODE_WIDTH,
 } from "@/lib/canvas-node-constants"
+import { cn } from "@/lib/utils"
 import { resolveNodeTextColor, type CanvasNode } from "@/types/canvas"
 
 export function CanvasNode({ id, data, selected }: NodeProps<CanvasNode>) {
@@ -25,6 +27,7 @@ export function CanvasNode({ id, data, selected }: NodeProps<CanvasNode>) {
   const { updateNodeLabel, updateNodeColor } = useCanvasFlow()
   const [isEditing, setIsEditing] = useState(false)
   const textColor = resolveNodeTextColor(data)
+  const applyEnterClass = useApplyEnterClassName()
 
   const handleLabelChange = useCallback(
     (label: string) => {
@@ -73,7 +76,7 @@ export function CanvasNode({ id, data, selected }: NodeProps<CanvasNode>) {
         }}
         lineStyle={{ borderColor: "var(--color-border-subtle)" }}
       />
-      <div className="group/node relative h-full w-full">
+      <div className={cn("group/node relative h-full w-full", applyEnterClass)}>
         <CanvasNodeHandles />
         <CanvasNodeShapeView
           shape={data.shape}

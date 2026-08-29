@@ -192,11 +192,11 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## In Progress
 
-- Architecture canvas v2 — Spec generation wired; next: Apply + Flow animation + Present mode
+- Architecture canvas v2 — Apply animation done; next: Flow animation + Present mode
 
 ## Next Up
 
-- Architecture canvas v2: Apply + Flow animation + Present mode
+- Architecture canvas v2: Flow animation + Present mode
 - #5 Delete/Backspace shortcuts
 - #6 Empty canvas hint
 - #7 Change node shape after drop
@@ -224,9 +224,11 @@ Update this file whenever the current phase, active feature, or implementation s
 - Nodes may carry optional `componentKind` (v1 catalog in `types/component-kind.ts`); geometric `shape` remains required for rendering; Design plans prefer kinds and fill shape/color/size from the catalog when omitted.
 - Groups are `canvasGroup` flow nodes with real React Flow containment (`parentId` + `extent: "parent"`); Design plans use `add_group` / `update_group` / `delete_group` and `parentId` on nodes; absolute coords convert to Group-relative on apply/drop.
 - Hybrid Design chat: `decideDesignAgentTurn` chooses interview vs plan; interview replies go to `ai-chat` with optional `offerGenerate`; Generate on canvas uses `intent: "generate"` to force a plan from chat history; clear edits still plan/apply immediately.
+- Apply animation: while Miro AI apply is active, new Nodes/Groups/Edges play short CSS enter motion; React Flow node transform/size soft-transitions; Design plan actions are paced with `APPLY_ACTION_GAP_MS`.
 
 ## Session Notes
 
+- Apply animation: enter fade/scale for Nodes/Groups and fade for Edges during AI apply; soft RF node transitions; Design apply staggered via `nextApplyActionDelayMs`.
 - Wire Spec generation: Specs tab Generate Spec posts canvas+chat via `buildSpecTriggerBody` → `/api/ai/spec` + token; `useSpecAgentRun` tracks Trigger run; list refresh on complete; Groups omitted from Spec payload.
 - Hybrid Design interview: turn outcomes interview|plan; Generate on canvas button; history + intent in design API/Trigger.
 - Groups: named frames with containment; Groups tab; Design plan group actions; drop-to-nest.

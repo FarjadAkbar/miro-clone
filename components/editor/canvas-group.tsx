@@ -10,6 +10,7 @@ import { useCallback, useState } from "react"
 import { useCanvasFlow } from "@/components/editor/canvas-flow-context"
 import { CanvasNodeLabelEditor } from "@/components/editor/canvas-node-label-editor"
 import { NodeDeleteButton } from "@/components/editor/node-delete-button"
+import { useApplyEnterClassName } from "@/hooks/use-apply-enter"
 import { cn } from "@/lib/utils"
 import type { CanvasGroup as CanvasGroupNode } from "@/types/canvas"
 
@@ -23,6 +24,7 @@ export function CanvasGroup({
 }: NodeProps<CanvasGroupNode>) {
   const { updateNodeLabel, removeGroup } = useCanvasFlow()
   const [isEditing, setIsEditing] = useState(false)
+  const applyEnterClass = useApplyEnterClassName()
 
   const handleLabelChange = useCallback(
     (label: string) => {
@@ -60,7 +62,8 @@ export function CanvasGroup({
       <div
         className={cn(
           "relative h-full w-full rounded-2xl border-2 border-dashed bg-bg-subtle/40",
-          selected ? "border-brand" : "border-surface-border"
+          selected ? "border-brand" : "border-surface-border",
+          applyEnterClass
         )}
       >
         <div className="absolute left-3 right-3 top-2 z-10 h-8 min-w-0">

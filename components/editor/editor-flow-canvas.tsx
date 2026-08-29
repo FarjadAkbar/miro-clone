@@ -33,6 +33,11 @@ import { CanvasNode } from "@/components/editor/canvas-node"
 import { ShapeDragPreviewProvider } from "@/components/editor/shape-drag-preview"
 import { ShapePanel } from "@/components/editor/shape-panel"
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts"
+import { useAiGenerationState } from "@/hooks/use-ai-generation-state"
+import {
+  ApplyEnterProvider,
+  applyEnterDurationStyle,
+} from "@/hooks/use-apply-enter"
 import {
   useCanvasAutosave,
   type CanvasSaveStatus,
@@ -42,6 +47,7 @@ import { CANVAS_ZOOM_DURATION_MS } from "@/lib/canvas-control-constants"
 import { createNodeFromCanvasDrop } from "@/lib/canvas-drop"
 import { parseGroupDragPayload } from "@/lib/canvas-group"
 import { parseShapeDragPayload } from "@/lib/canvas-node-factory"
+import { cn } from "@/lib/utils"
 import {
   CANVAS_EDGE_TYPE,
   CANVAS_GROUP_DRAG_TYPE,
@@ -126,6 +132,8 @@ function EditorFlowCanvasInner({
     canUndo,
     canRedo,
   })
+
+  const { isAiApplyActive } = useAiGenerationState()
 
   const nodeTypes = useMemo(
     () => ({
@@ -252,51 +260,57 @@ function EditorFlowCanvasInner({
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
     >
-      <div
-        className="relative h-[90vh] w-full"
-        onDragOver={handleDragOver}
-        onDrop={handleDrop}
-      >
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          nodeTypes={nodeTypes}
-          edgeTypes={edgeTypes}
-          defaultEdgeOptions={defaultEdgeOptions}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onConnect={onConnect}
-          onDelete={onDelete}
-          connectionMode={ConnectionMode.Loose}
-          connectionLineType={ConnectionLineType.SmoothStep}
-          fitView
-          className="bg-bg-base"
+      <ApplyEnterProvider active={isAiApplyActive}>
+        <div
+          className="relative h-[90vh] w-full"
+          onDragOver={handleDragOver}
+          onDrop={handleDrop}
         >
-          <Background
-            variant={BackgroundVariant.Dots}
-            gap={20}
-            size={1}
-            color="var(--color-border-subtle)"
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            nodeTypes={nodeTypes}
+            edgeTypes={edgeTypes}
+            defaultEdgeOptions={defaultEdgeOptions}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+            onDelete={onDelete}
+            connectionMode={ConnectionMode.Loose}
+            connectionLineType={ConnectionLineType.SmoothStep}
+            fitView
+            className={cn(
+              "bg-bg-base",
+              isAiApplyActive && "canvas-apply-animating"
+            )}
+            style={applyEnterDurationStyle()}
+          >
+            <Background
+              variant={BackgroundVariant.Dots}
+              gap={20}
+              size={1}
+              color="var(--color-border-subtle)"
+            />
+            <Cursors components={cursorComponents} />
+          </ReactFlow>
+          <CanvasPresenceAvatars />
+          <CanvasControlBar
+            onZoomIn={handleZoomIn}
+            onZoomOut={handleZoomOut}
+            onFitView={handleFitView}
+            onUndo={undo}
+            onRedo={redo}
+            canUndo={canUndo}
+            canRedo={canRedo}
           />
-          <Cursors components={cursorComponents} />
-        </ReactFlow>
-        <CanvasPresenceAvatars />
-        <CanvasControlBar
-          onZoomIn={handleZoomIn}
-          onZoomOut={handleZoomOut}
-          onFitView={handleFitView}
-          onUndo={undo}
-          onRedo={redo}
-          canUndo={canUndo}
-          canRedo={canRedo}
-        />
-        <ShapePanel />
-        <StarterTemplatesModal
-          open={templatesOpen}
-          onOpenChange={onTemplatesOpenChange}
-          onImport={handleImportTemplate}
-        />
-      </div>
+          <ShapePanel />
+          <StarterTemplatesModal
+            open={templatesOpen}
+            onOpenChange={onTemplatesOpenChange}
+            onImport={handleImportTemplate}
+          />
+        </div>
+      </ApplyEnterProvider>
     </CanvasFlowProvider>
   )
 }

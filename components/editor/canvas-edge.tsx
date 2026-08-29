@@ -14,6 +14,7 @@ import {
   EDGE_INTERACTION_WIDTH,
 } from "@/lib/canvas-edge-constants"
 import { DEFAULT_EDGE_COLOR, type CanvasEdge } from "@/types/canvas"
+import { useApplyEdgeEnterClassName } from "@/hooks/use-apply-enter"
 
 export function CanvasEdge({
   id,
@@ -31,6 +32,7 @@ export function CanvasEdge({
   const [hovered, setHovered] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
   const [draftLabel, setDraftLabel] = useState("")
+  const applyEnterClass = useApplyEdgeEnterClassName()
 
   const [edgePath, labelX, labelY] = getSmoothStepPath({
     sourceX,
@@ -59,6 +61,7 @@ export function CanvasEdge({
   return (
     <>
       <g
+        className={applyEnterClass}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >

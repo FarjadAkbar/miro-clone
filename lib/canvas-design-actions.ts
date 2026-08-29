@@ -1,5 +1,6 @@
 import { mutateFlow } from "@liveblocks/react-flow/node"
 import { MarkerType } from "@xyflow/react"
+import { nextApplyActionDelayMs } from "@/lib/apply-enter"
 import { createCanvasGroup, isCanvasGroup, nestNodeInGroup } from "@/lib/canvas-group"
 import { getLiveblocks } from "@/lib/liveblocks"
 import {
@@ -307,10 +308,18 @@ export async function applyDesignActions(
     cursor: { x: number; y: number } | null
   ) => Promise<void>
 ) {
-  for (const action of actions) {
+  for (let index = 0; index < actions.length; index += 1) {
+    const action = actions[index]
     const { cursor } = await applyDesignAction(roomId, action)
     if (onActionApplied) {
       await onActionApplied(action, cursor)
+    }
+
+    const delayMs = nextApplyActionDelayMs(index, actions.length)
+    if (delayMs > 0) {
+      await new Promise((resolve) => {
+        setTimeout(resolve, delayMs)
+      })
     }
   }
 }

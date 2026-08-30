@@ -1,4 +1,4 @@
-# Miro AI
+# Archflow
 
 A real-time collaborative workspace for designing and understanding software **systems** on a shared canvas, with AI help and generated specs.
 
@@ -58,4 +58,4 @@ _Avoid_: AI response (too vague when referring to the mutation plan)
 
 **Spec generation**:
 Turning the current system diagram (and related Design chat context) into a persisted Markdown technical specification from the Specs tab.
-_Avoid_: Export only, download-only (generation creates the artifact; download is separate)
+_Avoid_: Doc gen alone when you mean the Specs-tab pipeline

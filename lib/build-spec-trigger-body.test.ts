@@ -48,7 +48,7 @@ describe("buildSpecTriggerBody", () => {
         timestamp: 1,
       },
       {
-        sender: "Miro AI",
+        sender: "Archflow",
         role: "assistant",
         content: "Ready to draw.",
         timestamp: 2,

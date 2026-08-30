@@ -9,7 +9,7 @@ import {
   AI_STATUS_MESSAGE_ID,
 } from "@/types/tasks"
 
-const AI_AGENT_NAME = "Miro AI"
+const AI_AGENT_NAME = AI_AGENT_DISPLAY_NAME
 const AI_AGENT_COLOR = "#8b82ff"
 const PRESENCE_TTL_SECONDS = 120
 

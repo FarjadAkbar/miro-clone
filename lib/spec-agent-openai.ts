@@ -2,7 +2,7 @@ import { generateText } from "ai"
 import { getOpenAIModel } from "@/lib/openai"
 import type { GenerateSpecPayload } from "@/types/spec-agent"
 
-const SYSTEM_PROMPT = `You are Miro AI, a technical writing assistant for system architecture diagrams.
+const SYSTEM_PROMPT = `You are Archflow, a technical writing assistant for system architecture diagrams.
 
 Write a complete Markdown technical specification from the provided canvas graph and room chat history.
 

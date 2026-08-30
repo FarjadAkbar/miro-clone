@@ -10,4 +10,4 @@
 - [x] Design apply paces mutations so enter motion can play
 - [x] Nodes/Groups fade+scale in while AI apply is active
 - [x] Edges fade in while AI apply is active
-- [x] Soft transform/size transitions on canvas while Miro AI apply presence is active
+- [x] Soft transform/size transitions on canvas while Archflow apply presence is active

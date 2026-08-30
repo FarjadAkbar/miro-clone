@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "Miro AI",
+  title: "Archflow",
   description: "Collaborative system design workspace",
 }
 

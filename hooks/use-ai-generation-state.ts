@@ -37,7 +37,7 @@ export function useAiGenerationState() {
 
   return {
     isGenerating,
-    /** Miro AI presence thinking — true while a Design run (incl. apply) is in flight. */
+    /** Archflow presence thinking — true while a Design run (incl. apply) is in flight. */
     isAiApplyActive: aiThinkingFromPresence,
     latestStatus,
   }

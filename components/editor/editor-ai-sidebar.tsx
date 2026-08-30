@@ -37,7 +37,7 @@ function AiSidebarHeader({ onClose }: { onClose: () => void }) {
       </div>
       <div className="min-w-0 flex-1">
         <h2 className="text-sm font-semibold text-copy-primary">AI Workspace</h2>
-        <p className="text-xs text-copy-muted">Collaborate with Miro AI</p>
+        <p className="text-xs text-copy-muted">Collaborate with Archflow</p>
       </div>
       <Button
         type="button"

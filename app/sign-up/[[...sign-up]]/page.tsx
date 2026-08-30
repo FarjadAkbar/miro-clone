@@ -46,7 +46,7 @@ export default async function SignUpPage() {
               </span>
             </div>
             <span className="text-sm font-semibold text-text-primary">
-              Miro AI
+              Archflow
             </span>
           </div>
         </div>
@@ -58,7 +58,7 @@ export default async function SignUpPage() {
             speed of thought.
           </h1>
           <p className="text-text-secondary text-base leading-relaxed mb-12 max-w-sm">
-            Describe your architecture in plain English. Miro AI maps it to a
+            Describe your architecture in plain English. Archflow maps it to a
             shared canvas your whole team can refine in real time.
           </p>
 
@@ -83,7 +83,7 @@ export default async function SignUpPage() {
 
         <div className="px-12 pb-10">
           <p className="text-xs text-text-faint">
-            © 2026 Miro AI. All rights reserved.
+            © 2026 Archflow. All rights reserved.
           </p>
         </div>
       </div>

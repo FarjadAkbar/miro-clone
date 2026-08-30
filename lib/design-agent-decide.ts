@@ -17,7 +17,7 @@ const decideSchema = z.object({
   planningPrompt: z.string().nullable(),
 })
 
-const SYSTEM_PROMPT = `You are Miro AI deciding the next Design chat turn for a collaborative architecture canvas.
+const SYSTEM_PROMPT = `You are Archflow deciding the next Design chat turn for a collaborative architecture canvas.
 
 Choose exactly one outcome:
 1) interview — open-ended architecture asks, or continuing a Design interview to gather functional/non-functional requirements. Ask one focused question (or a short tight set). Set offerGenerate=true only when requirements are clear enough to draw the diagram.

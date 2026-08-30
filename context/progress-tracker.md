@@ -213,7 +213,7 @@ Update this file whenever the current phase, active feature, or implementation s
 - Collaborators stored by email in `ProjectCollaborator`; profile enrichment via Clerk Backend API only (no local user table).
 - Liveblocks uses access-token auth via `prepareSession` + per-request `session.allow(room)` after Prisma access checks; rooms created with `defaultAccesses: []`.
 - Canvas state synced via `useLiveblocksFlow` in Liveblocks Storage; node shapes rendered via shared `CanvasNodeShapeView`.
-- AI design agent runs as Trigger.dev task; canvas updates use server-side `mutateFlow`; Miro AI presence via `setPresence` (`miro-ai` user ID).
+- AI design agent runs as Trigger.dev task; canvas updates use server-side `mutateFlow`; Archflow presence via `setPresence` (`archflow-ai` user ID).
 - Shared AI progress uses Liveblocks feed `ai-status-feed` (single latest message) plus presence `thinking` flag.
 - Room chat uses separate Liveblocks feed `ai-chat`; messages validated with Zod before render.
 - Spec generation runs as Trigger.dev `generate-spec` task; `projectId` derived server-side from authenticated `roomId` access.
@@ -223,12 +223,13 @@ Update this file whenever the current phase, active feature, or implementation s
 - Nodes may carry optional `componentKind` (v1 catalog in `types/component-kind.ts`); geometric `shape` remains required for rendering; Design plans prefer kinds and fill shape/color/size from the catalog when omitted.
 - Groups are `canvasGroup` flow nodes with real React Flow containment (`parentId` + `extent: "parent"`); Design plans use `add_group` / `update_group` / `delete_group` and `parentId` on nodes; absolute coords convert to Group-relative on apply/drop.
 - Hybrid Design chat: `decideDesignAgentTurn` chooses interview vs plan; interview replies go to `ai-chat` with optional `offerGenerate`; Generate on canvas uses `intent: "generate"` to force a plan from chat history; clear edits still plan/apply immediately.
-- Apply animation: while Miro AI apply is active, new Nodes/Groups/Edges play short CSS enter motion; React Flow node transform/size soft-transitions; Design plan actions are paced with `APPLY_ACTION_GAP_MS`.
+- Apply animation: while Archflow apply is active, new Nodes/Groups/Edges play short CSS enter motion; React Flow node transform/size soft-transitions; Design plan actions are paced with `APPLY_ACTION_GAP_MS`.
 - Flow animation + Present mode: edges carry `sequence` (Design or topological); travelers + hop badges while playing; brief play after apply; Present mode toggle keeps Flow on.
 
 ## Session Notes
 
-- Canvas UX polish: sequential hop Flow playhead; minZoom 0.05; marquee multi-select + Delete; larger connect handles; WhatsApp/YouTube templates; stricter AI layout spacing.
+- Renamed product branding from Miro AI / miro-clone to **Archflow** (package, UI, agent display name, Liveblocks AI user id `archflow-ai`).
+- Canvas UX polish: sequential hop Flow playhead; minZoom 0.05; marquee multi-select + Delete; larger connect handles; WhatsApp/YouTube templates; stricter AI layout spacing; architecture icon cards for component kinds (phone, cloud, server stack, bucket, etc.).
 - Flow animation + Present mode: `resolveTravelSequences` + brief post-apply play; Present toggle on control bar; edge travelers show direction and hop order (not metrics).
 - Apply animation: enter fade/scale for Nodes/Groups and fade for Edges during AI apply; soft RF node transitions; Design apply staggered via `nextApplyActionDelayMs`.
 - Wire Spec generation: Specs tab Generate Spec posts canvas+chat via `buildSpecTriggerBody` → `/api/ai/spec` + token; `useSpecAgentRun` tracks Trigger run; list refresh on complete; Groups omitted from Spec payload.
